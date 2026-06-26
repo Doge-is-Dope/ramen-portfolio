@@ -4,7 +4,6 @@ import { profile } from "@/data/profile";
 
 <footer class="site-footer">
   <span class="site-footer__name">{profile.name} · {profile.role}</span>
-  <span class="site-footer__updated">Last updated {profile.lastUpdated}</span>
 </footer>
 
 <style>
@@ -26,18 +25,10 @@ import { profile } from "@/data/profile";
     color: var(--fg);
   }
 
-  .site-footer__updated {
-    text-align: right;
-  }
-
   @media (max-width: 640px) {
     .site-footer {
       align-items: flex-start;
       flex-direction: column;
-    }
-
-    .site-footer__updated {
-      text-align: left;
     }
   }
 </style>
