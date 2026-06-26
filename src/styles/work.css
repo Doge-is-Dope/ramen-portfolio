@@ -200,7 +200,11 @@
 .work-sort__option:hover,
 .work-sort__option:focus-visible {
   background: var(--code-bg);
-  outline: none;
+}
+
+.work-sort__option:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: -2px;
 }
 
 .work-sort__check {

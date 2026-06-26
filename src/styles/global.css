@@ -27,6 +27,31 @@ body {
   color: var(--selection-fg);
 }
 
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  color: var(--bg);
+  background: var(--fg);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transform: translateY(calc(-100% - 1rem));
+  transition: transform 120ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+#main-content:focus {
+  outline: none;
+}
+
 code {
   font-family: var(--font-mono);
   font-size: 0.92em;
