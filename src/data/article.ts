@@ -16,11 +16,11 @@ export const sections: ArticleSection[] = [
       "I wanted a name that named what the system does rather than what it is built from. RAMEN is a backronym for the loop the agent runs on every task:",
     ],
     items: [
-      "**R**eason — Think before acting.",
-      "**A**ct — Execute reliably.",
-      "**M**onitor — Verify outcomes.",
-      "**E**volve — Learn continuously.",
-      "**N**avigate — Move toward the goal.",
+      "**R**eason: Think before acting.",
+      "**A**ct: Execute reliably.",
+      "**M**onitor: Verify outcomes.",
+      "**E**volve: Learn continuously.",
+      "**N**avigate: Move toward the goal.",
     ],
   },
   {
@@ -78,7 +78,8 @@ export const sections: ArticleSection[] = [
     id: "next",
     title: "What's next",
     paragraphs: [
-      "Looking back across the four months, the part I am most proud of is that the system is still growable. A handful of next steps have not shipped yet: context compaction through middleware, generative UI for tool output, agent skills, MCP integration, and a sandbox layer for tools that need stronger isolation. Each one slots into a seam I left open by design, rather than forcing a rewrite.",
+      "The core architecture is in place, but there is still plenty of room to grow. The next step is making the system more autonomous through persistent memory, proactive task execution, adaptive workflows, long-horizon planning, and secure execution environments. Because these capabilities were considered early in the design, each one extends the existing architecture rather than replacing it.",
+      "The goal is not simply to add more features, but to keep pushing the boundary of what an AI driver can do."
     ],
   },
 ];
