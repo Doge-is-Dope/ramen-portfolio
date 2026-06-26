@@ -6,6 +6,10 @@ type Props = {
 };
 
 const { profile } = Astro.props;
+
+// Wrap the first "RAMEN" so it can shimmer once on load; leave the rest plain.
+const [headlineBefore, ...headlineRest] = profile.headline.split("RAMEN");
+const headlineAfter = headlineRest.join("RAMEN");
 ---
 
 <header class="article-hero">
@@ -14,7 +18,21 @@ const { profile } = Astro.props;
     <span aria-hidden="true">&middot;</span>
     <span>{profile.kicker}</span>
   </p>
-  <h1 class="article-hero__title">{profile.headline}</h1>
+  <h1 class="article-hero__title">
+    {
+      headlineRest.length > 0 ? (
+        <>
+          {headlineBefore}
+          <span class="article-hero__brand wordmark-shimmer" data-text="RAMEN">
+            RAMEN
+          </span>
+          {headlineAfter}
+        </>
+      ) : (
+        profile.headline
+      )
+    }
+  </h1>
   <p class="article-hero__dek">{profile.dek}</p>
 </header>
 
@@ -56,3 +74,21 @@ const { profile } = Astro.props;
     text-wrap: balance;
   }
 </style>
+
+<script>
+  const playHeroShimmer = () => {
+    const brand = document.querySelector<HTMLElement>(".article-hero__brand");
+    if (!brand) return;
+    // Restart cleanly so the sweep replays on each landing (incl. view transitions).
+    brand.classList.remove("is-shimmering");
+    void brand.offsetWidth;
+    brand.classList.add("is-shimmering");
+  };
+
+  const win = window as typeof window & { __heroShimmerInit?: boolean };
+  if (!win.__heroShimmerInit) {
+    win.__heroShimmerInit = true;
+    document.addEventListener("astro:page-load", playHeroShimmer);
+  }
+  playHeroShimmer();
+</script>

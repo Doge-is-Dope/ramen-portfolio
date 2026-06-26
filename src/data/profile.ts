@@ -6,6 +6,6 @@ export const profile: Profile = {
   reviewPeriod: "Dec 2025 – Apr 2026",
   lastUpdated: "April 2026",
   kicker: "Case Study",
-  headline: "Building RAMEN, an agent platform, from product plan to working system.",
-  dek: "I planned, designed, implemented, and validated RAMEN end-to-end across a FastAPI agent backend and a React chat product with a Chrome-extension companion.",
+  headline: "Building RAMEN",
+  dek: "From product plan to working system.",
 };

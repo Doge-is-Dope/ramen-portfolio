@@ -7,7 +7,9 @@ const { text } = Astro.props;
 ---
 
 {
-  splitInline(text).map((part) =>
-    typeof part === "string" ? part : <code>{part.code}</code>,
-  )
+  splitInline(text).map((part) => {
+    if (typeof part === "string") return part;
+    if ("code" in part) return <code>{part.code}</code>;
+    return <strong>{part.strong}</strong>;
+  })
 }

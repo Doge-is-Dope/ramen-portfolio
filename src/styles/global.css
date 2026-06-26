@@ -102,6 +102,54 @@ code {
   }
 }
 
+/* Iridescent sheen swept across a wordmark; toggle .is-shimmering to play once.
+   Needs data-text="..." on the element so the ::before overlay can clip it. */
+.wordmark-shimmer {
+  position: relative;
+  display: inline-block;
+}
+
+.wordmark-shimmer::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    105deg,
+    var(--fg) 0%,
+    var(--fg) 16%,
+    color-mix(in oklab, var(--fg) 74%, #b6d3ef) 25%,
+    color-mix(in oklab, var(--fg) 38%, #cdd1d7) 32%,
+    color-mix(in oklab, var(--fg) 14%, #e6cdb2) 38%,
+    color-mix(in oklab, var(--fg) 8%, #ef9b62) 43%,
+    color-mix(in oklab, var(--fg) 14%, #f18d7e) 48%,
+    color-mix(in oklab, var(--fg) 38%, #f78a9c) 53%,
+    color-mix(in oklab, var(--fg) 74%, #f888a0) 59%,
+    var(--fg) 66%,
+    var(--fg) 100%
+  );
+  background-size: 320% 100%;
+  background-position: 100% 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.wordmark-shimmer.is-shimmering::before {
+  animation: wordmark-shimmer 0.85s ease-out;
+}
+
+@keyframes wordmark-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
