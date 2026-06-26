@@ -15,6 +15,11 @@ const canonicalPath = Astro.url.pathname.endsWith("/")
   : `${Astro.url.pathname}/`;
 const canonical = new URL(canonicalPath, Astro.site);
 const favicon = withBase("/favicon.svg");
+const inter400 = withBase("/fonts/inter-latin-400.woff2");
+const inter500 = withBase("/fonts/inter-latin-500.woff2");
+const fontFaceCss = `
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:swap;src:url("${inter400}") format("woff2");}
+@font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:swap;src:url("${inter500}") format("woff2");}`;
 ---
 
 <!doctype html>
@@ -29,12 +34,21 @@ const favicon = withBase("/favicon.svg");
     {robots ? <meta name="robots" content={robots} /> : null}
     <link rel="canonical" href={canonical.href} />
     <link rel="icon" type="image/svg+xml" href={favicon} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={inter400}
+      crossorigin
     />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={inter500}
+      crossorigin
+    />
+    <style set:html={fontFaceCss}></style>
     <script is:inline>
       (function () {
         function applyTheme() {
