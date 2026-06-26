@@ -36,14 +36,12 @@ code {
   color: var(--fg);
 }
 
-/* Page shell shared by the case study and tokens pages. */
 .article-shell {
   max-width: var(--measure-shell);
   margin: 0 auto;
   padding-inline: var(--space-gutter);
 }
 
-/* Section heading shared by article sections and the tokens page. */
 .article-section__title,
 .tokens-page__heading {
   margin: 0 0 1.5rem;
@@ -54,7 +52,6 @@ code {
   color: var(--fg);
 }
 
-/* Theme-change transition shared across surfaces in several components. */
 .site-footer,
 .tokens-swatch,
 .tokens-swatch__chip,
@@ -73,6 +70,35 @@ code {
   ::view-transition-new(root) {
     animation-duration: 320ms;
     animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  ::view-transition-old(theme-toggle),
+  ::view-transition-new(theme-toggle) {
+    animation-duration: 440ms;
+    animation-timing-function: cubic-bezier(0.45, 1.6, 0.5, 1);
+    transform-origin: center;
+  }
+
+  ::view-transition-old(theme-toggle) {
+    animation-name: theme-toggle-spin-out;
+  }
+
+  ::view-transition-new(theme-toggle) {
+    animation-name: theme-toggle-spin-in;
+  }
+}
+
+@keyframes theme-toggle-spin-out {
+  to {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.3);
+  }
+}
+
+@keyframes theme-toggle-spin-in {
+  from {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.3);
   }
 }
 

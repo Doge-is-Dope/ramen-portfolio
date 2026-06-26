@@ -71,13 +71,14 @@
 
   .theme-toggle__icon {
     display: none;
+    view-transition-name: theme-toggle;
   }
 
-  :global([data-theme="light"]) .theme-toggle__icon[data-theme-icon="moon"] {
+  :global([data-theme="light"]) .theme-toggle__icon[data-theme-icon="sun"] {
     display: block;
   }
 
-  :global([data-theme="dark"]) .theme-toggle__icon[data-theme-icon="sun"] {
+  :global([data-theme="dark"]) .theme-toggle__icon[data-theme-icon="moon"] {
     display: block;
   }
 
