@@ -76,13 +76,10 @@ const headlineAfter = headlineRest.join("RAMEN");
 </style>
 
 <script>
+  import { playShimmer } from "@/lib/wordmark-shimmer";
+
   const playHeroShimmer = () => {
-    const brand = document.querySelector<HTMLElement>(".article-hero__brand");
-    if (!brand) return;
-    // Restart cleanly so the sweep replays on each landing (incl. view transitions).
-    brand.classList.remove("is-shimmering");
-    void brand.offsetWidth;
-    brand.classList.add("is-shimmering");
+    playShimmer(document.querySelector<HTMLElement>(".article-hero__brand"));
   };
 
   const win = window as typeof window & { __heroShimmerInit?: boolean };

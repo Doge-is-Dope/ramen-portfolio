@@ -173,20 +173,10 @@ const { activePage } = Astro.props;
 </style>
 
 <script>
+  import { bindHoverShimmer } from "@/lib/wordmark-shimmer";
+
   const setupWordmarkShimmer = () => {
-    const name = document.querySelector<HTMLElement>(".top-bar__name");
-    if (!name || name.dataset.shimmerBound) return;
-    name.dataset.shimmerBound = "true";
-
-    name.addEventListener("mouseenter", () => {
-      name.classList.add("is-shimmering");
-    });
-
-    name.addEventListener("animationend", (event) => {
-      if (event.pseudoElement === "::before") {
-        name.classList.remove("is-shimmering");
-      }
-    });
+    bindHoverShimmer(document.querySelector<HTMLElement>(".top-bar__name"));
   };
 
   const setupSamePageScroll = () => {
