@@ -16,7 +16,7 @@ const { activePage } = Astro.props;
     <div></div>
   </div>
   <div class="top-bar__inner">
-    <a class="top-bar__name" href={withBase("/")}>RAMEN</a>
+    <a class="top-bar__name" href={withBase("/")} data-text="RAMEN">RAMEN</a>
     <nav class="top-bar__nav" aria-label="Primary">
       <a
         href={withBase("/")}
@@ -107,8 +107,51 @@ const { activePage } = Astro.props;
   }
 
   .top-bar__name {
+    position: relative;
+    display: inline-block;
     color: var(--fg);
     text-decoration: none;
+  }
+
+  .top-bar__name::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+      105deg,
+      var(--fg) 0%,
+      var(--fg) 16%,
+      color-mix(in oklab, var(--fg) 74%, #b6d3ef) 25%,
+      color-mix(in oklab, var(--fg) 38%, #cdd1d7) 32%,
+      color-mix(in oklab, var(--fg) 14%, #e6cdb2) 38%,
+      color-mix(in oklab, var(--fg) 8%, #ef9b62) 43%,
+      color-mix(in oklab, var(--fg) 14%, #f18d7e) 48%,
+      color-mix(in oklab, var(--fg) 38%, #f78a9c) 53%,
+      color-mix(in oklab, var(--fg) 74%, #f888a0) 59%,
+      var(--fg) 66%,
+      var(--fg) 100%
+    );
+    background-size: 320% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .top-bar__name.is-shimmering::before {
+    animation: name-shimmer 0.85s ease-out;
+  }
+
+  @keyframes name-shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0% 0;
+    }
   }
 
   .top-bar__nav {
@@ -137,8 +180,6 @@ const { activePage } = Astro.props;
 
     .top-bar__blur > div:nth-child(1) {
       --b: 6px;
-      --m1: 0%;
-      --m2: 0%;
       --m3: 52%;
       --m4: 100%;
     }
@@ -163,3 +204,28 @@ const { activePage } = Astro.props;
     }
   }
 </style>
+
+<script>
+  const setupWordmarkShimmer = () => {
+    const name = document.querySelector<HTMLElement>(".top-bar__name");
+    if (!name || name.dataset.shimmerBound) return;
+    name.dataset.shimmerBound = "true";
+
+    name.addEventListener("mouseenter", () => {
+      name.classList.add("is-shimmering");
+    });
+
+    name.addEventListener("animationend", (event) => {
+      if (event.pseudoElement === "::before") {
+        name.classList.remove("is-shimmering");
+      }
+    });
+  };
+
+  const win = window as typeof window & { __wordmarkShimmerInit?: boolean };
+  if (!win.__wordmarkShimmerInit) {
+    win.__wordmarkShimmerInit = true;
+    document.addEventListener("astro:page-load", setupWordmarkShimmer);
+  }
+  setupWordmarkShimmer();
+</script>
