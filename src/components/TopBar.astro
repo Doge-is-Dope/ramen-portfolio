@@ -14,6 +14,7 @@ const { activePage } = Astro.props;
     <div></div>
     <div></div>
     <div></div>
+    <div></div>
   </div>
   <div class="top-bar__inner">
     <span class="top-bar__name wordmark-shimmer" data-text="RAMEN">RAMEN</span>
@@ -52,11 +53,14 @@ const { activePage } = Astro.props;
     height: calc(100% + 3rem);
     z-index: -1;
     pointer-events: none;
+    /* Heavier dimming carries the fade so blur radii can stay low,
+       which keeps text passing underneath from looking bolder. */
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--bg) 88%, transparent) 0%,
-      color-mix(in srgb, var(--bg) 70%, transparent) 45%,
-      transparent 86%
+      color-mix(in srgb, var(--bg) 94%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 80%, transparent) 38%,
+      color-mix(in srgb, var(--bg) 44%, transparent) 66%,
+      transparent 88%
     );
   }
 
@@ -78,20 +82,26 @@ const { activePage } = Astro.props;
     mask-image: var(--falloff);
   }
 
+  /* 4 layers, low max blur, small increments for a smooth ramp */
   .top-bar__blur > div:nth-child(1) {
-    --b: 1.5px;
-    --m3: 70%;
-    --m4: 86%;
+    --b: 1px;
+    --m3: 74%;
+    --m4: 90%;
   }
   .top-bar__blur > div:nth-child(2) {
-    --b: 6px;
-    --m3: 42%;
-    --m4: 68%;
+    --b: 3px;
+    --m3: 52%;
+    --m4: 76%;
   }
   .top-bar__blur > div:nth-child(3) {
-    --b: 12px;
-    --m3: 18%;
-    --m4: 40%;
+    --b: 6px;
+    --m3: 30%;
+    --m4: 56%;
+  }
+  .top-bar__blur > div:nth-child(4) {
+    --b: 10px;
+    --m3: 14%;
+    --m4: 36%;
   }
 
   .top-bar__inner {
