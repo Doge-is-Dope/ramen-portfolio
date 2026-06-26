@@ -16,7 +16,7 @@ const { activePage } = Astro.props;
     <div></div>
   </div>
   <div class="top-bar__inner">
-    <a class="top-bar__name wordmark-shimmer" href={withBase("/")} data-text="RAMEN">RAMEN</a>
+    <span class="top-bar__name wordmark-shimmer" data-text="RAMEN">RAMEN</span>
     <nav class="top-bar__nav" aria-label="Primary">
       <a
         href={withBase("/")}
@@ -179,10 +179,36 @@ const { activePage } = Astro.props;
     });
   };
 
+  const setupSamePageScroll = () => {
+    const bar = document.querySelector<HTMLElement>(".top-bar");
+    if (!bar || bar.dataset.samePageScrollBound) return;
+    bar.dataset.samePageScrollBound = "true";
+
+    bar.addEventListener("click", (event) => {
+      const link = (event.target as HTMLElement).closest<HTMLAnchorElement>(
+        ".top-bar__link",
+      );
+      if (!link) return;
+
+      const href = link.getAttribute("href");
+      if (!href) return;
+      const target = new URL(href, window.location.href);
+      if (target.pathname !== window.location.pathname) return;
+
+      event.preventDefault();
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    });
+  };
+
   const win = window as typeof window & { __wordmarkShimmerInit?: boolean };
   if (!win.__wordmarkShimmerInit) {
     win.__wordmarkShimmerInit = true;
     document.addEventListener("astro:page-load", setupWordmarkShimmer);
+    document.addEventListener("astro:page-load", setupSamePageScroll);
   }
   setupWordmarkShimmer();
+  setupSamePageScroll();
 </script>
