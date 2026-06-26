@@ -7,4 +7,6 @@ export const profile: Profile = {
   kicker: "Case Study",
   headline: "Building RAMEN",
   dek: "From product plan to working system.",
+  linkedin: "https://www.linkedin.com/in/chunchiehliang",
+  github: "https://github.com/Doge-is-Dope",
 };

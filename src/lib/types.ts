@@ -5,6 +5,8 @@ export type Profile = {
   kicker: string;
   headline: string;
   dek: string;
+  linkedin: string;
+  github: string;
 };
 
 export type ArticleFigureProps = {
