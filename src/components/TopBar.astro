@@ -9,23 +9,157 @@ type Props = {
 const { activePage } = Astro.props;
 ---
 
-<div class="top-bar">
-  <a class="top-bar__name" href={withBase("/")}>RAMEN</a>
-  <nav class="top-bar__nav" aria-label="Primary">
-    <a
-      href={withBase("/")}
-      aria-current={activePage === "caseStudy" ? "page" : undefined}
-      class="top-bar__link"
-    >
-      Case Study
-    </a>
-    <a
-      href={withBase("/work/")}
-      aria-current={activePage === "selectedWork" ? "page" : undefined}
-      class="top-bar__link"
-    >
-      Selected Work
-    </a>
-  </nav>
-  <ThemeToggle />
-</div>
+<header class="top-bar">
+  <div class="top-bar__blur" aria-hidden="true">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="top-bar__inner">
+    <a class="top-bar__name" href={withBase("/")}>RAMEN</a>
+    <nav class="top-bar__nav" aria-label="Primary">
+      <a
+        href={withBase("/")}
+        aria-current={activePage === "caseStudy" ? "page" : undefined}
+        class="top-bar__link"
+      >
+        Case Study
+      </a>
+      <a
+        href={withBase("/work/")}
+        aria-current={activePage === "selectedWork" ? "page" : undefined}
+        class="top-bar__link"
+      >
+        Selected Work
+      </a>
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>
+
+<style>
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .top-bar__blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(100% + 3rem);
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 70%, transparent) 45%,
+      transparent 100%
+    );
+  }
+
+  .top-bar__blur > div {
+    position: absolute;
+    inset: 0;
+    --m1: 0%;
+    --m2: 0%;
+    --falloff: linear-gradient(
+      to bottom,
+      transparent var(--m1),
+      #000 var(--m2),
+      #000 var(--m3),
+      transparent var(--m4)
+    );
+    -webkit-backdrop-filter: blur(var(--b));
+    backdrop-filter: blur(var(--b));
+    -webkit-mask-image: var(--falloff);
+    mask-image: var(--falloff);
+  }
+
+  .top-bar__blur > div:nth-child(1) {
+    --b: 1.5px;
+    --m3: 76%;
+    --m4: 100%;
+  }
+  .top-bar__blur > div:nth-child(2) {
+    --b: 6px;
+    --m3: 42%;
+    --m4: 68%;
+  }
+  .top-bar__blur > div:nth-child(3) {
+    --b: 16px;
+    --m3: 18%;
+    --m4: 40%;
+  }
+
+  .top-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--measure-shell);
+    margin: 0 auto;
+    padding: 1.25rem var(--space-gutter);
+    font-size: var(--fs-meta);
+    font-weight: var(--fw-medium);
+    color: var(--muted);
+  }
+
+  .top-bar__name {
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .top-bar__nav {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .top-bar__link {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+
+  .top-bar__link:hover {
+    color: var(--fg);
+  }
+
+  .top-bar__link[aria-current="page"] {
+    color: var(--fg);
+  }
+
+  @media (max-width: 640px), (hover: none) and (pointer: coarse) {
+    .top-bar__blur > div:nth-child(n + 2) {
+      display: none;
+    }
+
+    .top-bar__blur > div:nth-child(1) {
+      --b: 6px;
+      --m1: 0%;
+      --m2: 0%;
+      --m3: 52%;
+      --m4: 100%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .top-bar__inner {
+      gap: 0.75rem;
+      padding-inline: 1rem;
+    }
+
+    .top-bar__nav {
+      min-width: 0;
+      flex: 1 1 auto;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .top-bar__name,
+    .top-bar__link {
+      white-space: nowrap;
+    }
+  }
+</style>

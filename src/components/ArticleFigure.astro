@@ -22,3 +22,25 @@ const { src, alt, caption, width, height } = Astro.props;
     <InlineText text={caption} />
   </figcaption>
 </figure>
+
+<style>
+  .article-figure {
+    margin: 2.5rem 0 0;
+    padding: 0;
+  }
+
+  .article-figure__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-xs);
+  }
+
+  .article-figure__caption {
+    margin-top: 0.85rem;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-ui);
+    color: var(--muted);
+  }
+</style>
