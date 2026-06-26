@@ -96,8 +96,10 @@ const sortedWork = [...work].sort((a, b) => {
           ? dateB.localeCompare(dateA)
           : dateA.localeCompare(dateB);
       });
-      for (const row of sortedRows) list.appendChild(row);
-      if (emptyState) list.appendChild(emptyState);
+      const fragment = document.createDocumentFragment();
+      for (const row of sortedRows) fragment.appendChild(row);
+      if (emptyState) fragment.appendChild(emptyState);
+      list.appendChild(fragment);
     };
 
     const reduceMotion = window.matchMedia(

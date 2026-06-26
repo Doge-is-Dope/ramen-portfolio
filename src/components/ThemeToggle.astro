@@ -87,32 +87,39 @@
     button.title = `Switch to ${next} theme`;
   }
 
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-    const button = target.closest<HTMLButtonElement>("[data-theme-toggle]");
-    if (!button) return;
-    const current =
-      document.documentElement.getAttribute("data-theme") === "dark"
-        ? "dark"
-        : "light";
-    const next = current === "dark" ? "light" : "dark";
-    applyTheme(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {}
-  });
-
-  const media = window.matchMedia("(prefers-color-scheme: dark)");
-  media.addEventListener("change", (event) => {
-    try {
-      if (localStorage.getItem(STORAGE_KEY)) return;
-    } catch {}
-    applyTheme(event.matches ? "dark" : "light");
-  });
-
   const syncOnLoad = () =>
     syncLabel(document.documentElement.getAttribute("data-theme") ?? "light");
+
+  const win = window as typeof window & { __themeToggleInit?: boolean };
+  if (!win.__themeToggleInit) {
+    win.__themeToggleInit = true;
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest<HTMLButtonElement>("[data-theme-toggle]");
+      if (!button) return;
+      const current =
+        document.documentElement.getAttribute("data-theme") === "dark"
+          ? "dark"
+          : "light";
+      const next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {}
+    });
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    media.addEventListener("change", (event) => {
+      try {
+        if (localStorage.getItem(STORAGE_KEY)) return;
+      } catch {}
+      applyTheme(event.matches ? "dark" : "light");
+    });
+
+    document.addEventListener("astro:page-load", syncOnLoad);
+  }
+
   syncOnLoad();
-  document.addEventListener("astro:page-load", syncOnLoad);
 </script>
