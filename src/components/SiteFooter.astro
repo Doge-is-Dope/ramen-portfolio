@@ -3,7 +3,7 @@ import { profile } from "@/data/profile";
 ---
 
 <footer class="site-footer">
-  <span class="site-footer__name">{profile.name} · {profile.role}</span>
+  <span class="site-footer__name">{profile.name}</span>
   <div class="site-footer__links">
     <a
       class="site-footer__link"
@@ -49,10 +49,10 @@ import { profile } from "@/data/profile";
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: var(--space-4);
     max-width: var(--measure-shell);
     margin: 0 auto;
-    padding: 1.25rem var(--space-gutter);
+    padding: var(--space-5) var(--space-gutter);
     border-top: 1px solid var(--rule);
     font-size: var(--fs-meta);
     font-weight: var(--fw-medium);
@@ -66,7 +66,7 @@ import { profile } from "@/data/profile";
   .site-footer__links {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-4);
   }
 
   .site-footer__link {
@@ -80,14 +80,7 @@ import { profile } from "@/data/profile";
   }
 
   .site-footer__icon {
-    width: 1.1rem;
-    height: 1.1rem;
-  }
-
-  @media (max-width: 640px) {
-    .site-footer {
-      align-items: flex-start;
-      flex-direction: column;
-    }
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
 </style>
