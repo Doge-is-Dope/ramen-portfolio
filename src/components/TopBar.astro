@@ -50,7 +50,7 @@ const { activePage } = Astro.props;
     top: 0;
     left: 0;
     right: 0;
-    height: calc(100% + 3rem);
+    height: calc(100% + var(--space-12));
     z-index: -1;
     pointer-events: none;
     /* Heavier dimming carries the fade so blur radii can stay low,
@@ -110,7 +110,7 @@ const { activePage } = Astro.props;
     justify-content: space-between;
     max-width: var(--measure-shell);
     margin: 0 auto;
-    padding: 1.25rem var(--space-gutter);
+    padding: var(--space-5) var(--space-gutter);
     font-size: var(--fs-meta);
     font-weight: var(--fw-medium);
     color: var(--muted);
@@ -123,7 +123,7 @@ const { activePage } = Astro.props;
 
   .top-bar__nav {
     display: flex;
-    gap: 1.25rem;
+    gap: var(--space-5);
   }
 
   .top-bar__link {
@@ -154,15 +154,15 @@ const { activePage } = Astro.props;
 
   @media (max-width: 640px) {
     .top-bar__inner {
-      gap: 0.75rem;
-      padding-inline: 1rem;
+      gap: var(--space-3);
+      padding-inline: var(--space-4);
     }
 
     .top-bar__nav {
       min-width: 0;
       flex: 1 1 auto;
       justify-content: center;
-      gap: 1rem;
+      gap: var(--space-4);
     }
 
     .top-bar__name,

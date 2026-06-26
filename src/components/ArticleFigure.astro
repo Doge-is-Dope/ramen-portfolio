@@ -25,7 +25,7 @@ const { src, alt, caption, width, height } = Astro.props;
 
 <style>
   .article-figure {
-    margin: 2.5rem 0 0;
+    margin: var(--space-10) 0 0;
     padding: 0;
   }
 
@@ -38,7 +38,7 @@ const { src, alt, caption, width, height } = Astro.props;
   }
 
   .article-figure__caption {
-    margin-top: 0.85rem;
+    margin-top: var(--space-3);
     font-size: var(--fs-caption);
     line-height: var(--lh-ui);
     color: var(--muted);

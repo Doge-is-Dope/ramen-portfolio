@@ -43,6 +43,11 @@ export type SpaceToken = {
   label: string;
 };
 
+export type IconToken = {
+  name: string;
+  label: string;
+};
+
 export type RadiusToken = {
   name: string;
   label: string;
