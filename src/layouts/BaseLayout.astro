@@ -75,6 +75,29 @@ const fontFaceCss = `
         }
       })();
     </script>
+    <script is:inline>
+      // Skip link: focus <main> via a transient tabindex so the landmark keeps
+      // no static one (which the a11y audit flags). Guarded to bind once.
+      (function () {
+        if (window.__skipLinkBound) return;
+        window.__skipLinkBound = true;
+        document.addEventListener("click", function (event) {
+          var link = event.target.closest && event.target.closest(".skip-link");
+          if (!link) return;
+          var main = document.getElementById("main-content");
+          if (!main) return;
+          main.setAttribute("tabindex", "-1");
+          main.focus();
+          main.addEventListener(
+            "blur",
+            function () {
+              main.removeAttribute("tabindex");
+            },
+            { once: true }
+          );
+        });
+      })();
+    </script>
     <ClientRouter />
   </head>
   <body>
