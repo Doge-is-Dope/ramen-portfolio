@@ -241,7 +241,7 @@ code {
 
   ::view-transition-old(theme-toggle),
   ::view-transition-new(theme-toggle) {
-    animation-duration: 440ms;
+    animation-duration: 520ms;
     animation-timing-function: cubic-bezier(0.45, 1.6, 0.5, 1);
     transform-origin: center;
   }
@@ -258,14 +258,14 @@ code {
 @keyframes theme-toggle-spin-out {
   to {
     opacity: 0;
-    transform: rotate(-90deg) scale(0.3);
+    transform: rotate(-180deg) scale(0.2);
   }
 }
 
 @keyframes theme-toggle-spin-in {
   from {
     opacity: 0;
-    transform: rotate(90deg) scale(0.3);
+    transform: rotate(180deg) scale(0.2);
   }
 }
 
