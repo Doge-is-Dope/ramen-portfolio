@@ -58,7 +58,7 @@ const sortedWork = [...work].sort((a, b) => {
     const sortTrigger = document.querySelector<HTMLButtonElement>(
       "[data-sort-trigger]",
     );
-    const sortMenu = document.querySelector<HTMLUListElement>(
+    const sortMenu = document.querySelector<HTMLDivElement>(
       "[data-sort-menu]",
     );
     const sortCurrent = document.querySelector<HTMLSpanElement>(
@@ -66,7 +66,7 @@ const sortedWork = [...work].sort((a, b) => {
     );
     const sortOptions = sortMenu
       ? Array.from(
-          sortMenu.querySelectorAll<HTMLLIElement>("[data-sort-option]"),
+          sortMenu.querySelectorAll<HTMLElement>("[data-sort-option]"),
         )
       : [];
 
@@ -183,7 +183,7 @@ const sortedWork = [...work].sort((a, b) => {
         if (returnFocus) sortTrigger.focus();
       };
 
-      const selectOption = (option: HTMLLIElement) => {
+      const selectOption = (option: HTMLElement) => {
         for (const sortOption of sortOptions) {
           sortOption.setAttribute(
             "aria-selected",

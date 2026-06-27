@@ -69,7 +69,7 @@ const workSortOptions = [
             stroke-linejoin="round"></path>
         </svg>
       </button>
-      <ul
+      <div
         id="work-sort-menu"
         class="work-sort__menu"
         role="listbox"
@@ -80,7 +80,7 @@ const workSortOptions = [
       >
         {
           workSortOptions.map((option, idx) => (
-            <li
+            <div
               class="work-sort__option"
               role="option"
               tabindex="-1"
@@ -102,10 +102,10 @@ const workSortOptions = [
                   stroke-linejoin="round"
                 />
               </svg>
-            </li>
+            </div>
           ))
         }
-      </ul>
+      </div>
     </div>
   </div>
 </div>
