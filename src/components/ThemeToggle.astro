@@ -106,10 +106,22 @@
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const start = (document as DocumentWithVT).startViewTransition;
-    if (!reduceMotion && typeof start === "function") {
-      start.call(document, update);
-    } else {
+    if (reduceMotion || typeof start !== "function") {
       update();
+      return;
+    }
+    // Safari omits backdrop-filter from the root VT snapshot, so the blurred
+    // nav text flashes sharp. Keep root live (only the icon morphs) so it holds.
+    root.setAttribute("data-theme-switching", "");
+    void root.offsetWidth; // arm the color transition before the swap
+    const transition = start.call(document, update) as {
+      finished?: Promise<unknown>;
+    };
+    const done = () => root.removeAttribute("data-theme-switching");
+    if (transition?.finished) {
+      transition.finished.finally(done);
+    } else {
+      window.setTimeout(done, 400);
     }
   }
 

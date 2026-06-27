@@ -214,6 +214,24 @@ code {
   scroll-margin-top: var(--space-section);
 }
 
+/* Theme flip keeps root out of the VT (see ThemeToggle) so Safari holds the
+   live backdrop-filter; the color change rides this transition instead. */
+:root[data-theme-switching] {
+  view-transition-name: none;
+}
+
+:root[data-theme-switching],
+:root[data-theme-switching] *,
+:root[data-theme-switching] *::before,
+:root[data-theme-switching] *::after {
+  transition:
+    background-color 320ms cubic-bezier(0.32, 0.72, 0, 1),
+    border-color 320ms cubic-bezier(0.32, 0.72, 0, 1),
+    color 320ms cubic-bezier(0.32, 0.72, 0, 1),
+    fill 320ms cubic-bezier(0.32, 0.72, 0, 1),
+    stroke 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root),
   ::view-transition-new(root) {
