@@ -86,6 +86,130 @@ code {
   transition: background-color 240ms ease, border-color 240ms ease;
 }
 
+/* Inline-SVG diagrams (src/components/diagrams/): frameless, nodes are subtle
+   filled cards that track the theme via --fg / --muted. */
+.diagram {
+  --d-card: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .diagram {
+  --d-card: rgba(255, 255, 255, 0.1);
+}
+
+.diagram-figure {
+  margin: var(--space-12) 0 0;
+  padding: 0;
+}
+
+.diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+/* Smooth the palette swap on theme toggle, matching the 240ms used elsewhere. */
+.diagram :is(rect, line, path, text) {
+  transition: fill 240ms ease, stroke 240ms ease;
+}
+
+.diagram-figure__caption {
+  margin-top: var(--space-4);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-ui);
+  color: var(--muted);
+}
+
+/* Regions are carried by their titles and card grouping, not an outline. */
+.diagram__plane,
+.diagram__group {
+  fill: none;
+  stroke: none;
+}
+
+.diagram__node {
+  fill: var(--d-card);
+  stroke: none;
+}
+
+.diagram__group-title {
+  fill: var(--muted);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.1em;
+  text-anchor: middle;
+}
+
+.diagram__node-title {
+  fill: var(--fg);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  text-anchor: middle;
+}
+
+.diagram__node-sub {
+  fill: var(--muted);
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.diagram__link {
+  stroke: var(--fg);
+  stroke-width: 1;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.diagram__link--soft {
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.diagram__arrowhead {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.diagram__arrowhead--soft {
+  stroke: var(--muted);
+}
+
+.diagram__label {
+  fill: var(--muted);
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.diagram__label--strong {
+  fill: var(--fg);
+}
+
+.diagram__step {
+  fill: var(--fg);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.02em;
+}
+
+/* In SVG, a CSS text-anchor wins over the inline attribute, so left-aligned
+   labels need this class rather than text-anchor="start". Declared last so it
+   overrides the centered base classes. */
+.diagram__anchor-start {
+  text-anchor: start;
+}
+
+/* Denser diagrams shrink node titles so long real names (LangChainAgentService,
+   ChatEventSerializer) fit their chips. */
+.diagram--compact .diagram__node-title {
+  font-size: 12px;
+}
+
 [id] {
   scroll-margin-top: var(--space-section);
 }

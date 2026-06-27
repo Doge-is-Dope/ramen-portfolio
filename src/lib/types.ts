@@ -17,12 +17,18 @@ export type ArticleFigureProps = {
   height: number;
 };
 
+export type ArticleDiagram = {
+  kind: "system" | "runtime" | "browser-relay";
+  caption: string;
+};
+
 export type ArticleSection = {
   id: string;
   title: string;
   paragraphs: string[];
   items?: string[];
   figure?: ArticleFigureProps;
+  diagram?: ArticleDiagram;
 };
 
 export type ColorToken = {

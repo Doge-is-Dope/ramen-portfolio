@@ -1,0 +1,101 @@
+---
+import InlineText from "@/components/InlineText.astro";
+
+type Props = { caption: string };
+
+const { caption } = Astro.props;
+---
+
+<figure class="diagram-figure">
+  <svg
+    class="diagram"
+    viewBox="0 0 640 456"
+    role="img"
+    aria-labelledby="br-title br-desc"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title id="br-title">RAMEN browser-automation tool-call relay</title>
+    <desc id="br-desc">
+      After a ws-ticket handshake, a browser tool call relays from the
+      browser_use subagent through the backend dispatcher, over the WebSocket to
+      the extension service worker, and into the controlled tab via
+      chrome.debugger. The CDP result returns along the same path as a
+      ToolMessage.
+    </desc>
+
+    <defs>
+      <marker
+        id="br-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M0,0 L10,5 L0,10" class="diagram__arrowhead" />
+      </marker>
+    </defs>
+
+    <!-- Session setup strip: rows padded ~18px top/bottom, ~26px apart -->
+    <rect x="16" y="36" width="608" height="70" rx="6" class="diagram__node" />
+    <text x="30" y="62" class="diagram__step diagram__anchor-start">Handshake</text>
+    <text x="112" y="62" class="diagram__node-sub diagram__anchor-start">client → /chat/ws-ticket → Redis issues ticket → WS connects</text>
+    <text x="30" y="88" class="diagram__step diagram__anchor-start">Register</text>
+    <text x="112" y="88" class="diagram__node-sub diagram__anchor-start">extension sends CDP tool schemas → backend builds proxy tools for browser_use</text>
+
+    <!-- side labels, baseline centered in the strip→cards band (106→130) -->
+    <text x="180" y="122" class="diagram__group-title">BACKEND</text>
+    <text x="485" y="122" class="diagram__group-title">BROWSER EXTENSION</text>
+
+    <!-- WebSocket boundary -->
+    <line x1="332" y1="128" x2="332" y2="430" class="diagram__link--soft" stroke-dasharray="4 4" />
+
+    <!-- actor headers -->
+    <rect x="40" y="130" width="130" height="48" rx="5" class="diagram__node" />
+    <text x="105" y="151" class="diagram__node-title">browser_use</text>
+    <text x="105" y="168" class="diagram__node-sub">subagent</text>
+
+    <rect x="190" y="130" width="130" height="48" rx="5" class="diagram__node" />
+    <text x="255" y="151" class="diagram__node-title">Dispatcher</text>
+    <text x="255" y="168" class="diagram__node-sub">BrowserToolCall</text>
+
+    <rect x="345" y="130" width="130" height="48" rx="5" class="diagram__node" />
+    <text x="410" y="151" class="diagram__node-title">Service worker</text>
+    <text x="410" y="168" class="diagram__node-sub">runCdpToolCall</text>
+
+    <rect x="500" y="130" width="120" height="48" rx="5" class="diagram__node" />
+    <text x="560" y="151" class="diagram__node-title">Controlled tab</text>
+    <text x="560" y="168" class="diagram__node-sub">CDP target</text>
+
+    <!-- lifelines -->
+    <line x1="105" y1="178" x2="105" y2="430" class="diagram__link--soft" stroke-dasharray="2 4" />
+    <line x1="255" y1="178" x2="255" y2="430" class="diagram__link--soft" stroke-dasharray="2 4" />
+    <line x1="410" y1="178" x2="410" y2="430" class="diagram__link--soft" stroke-dasharray="2 4" />
+    <line x1="560" y1="178" x2="560" y2="430" class="diagram__link--soft" stroke-dasharray="2 4" />
+
+    <!-- forward: tool call -->
+    <text x="180" y="206" class="diagram__label">1 · cdp_* tool call</text>
+    <line x1="105" y1="212" x2="255" y2="212" class="diagram__link" marker-end="url(#br-arrow)" />
+
+    <text x="332" y="248" class="diagram__label">2 · tool_call · WebSocket</text>
+    <line x1="255" y1="254" x2="410" y2="254" class="diagram__link" marker-end="url(#br-arrow)" />
+
+    <text x="485" y="290" class="diagram__label">3 · chrome.debugger (CDP)</text>
+    <line x1="410" y1="296" x2="560" y2="296" class="diagram__link" marker-end="url(#br-arrow)" />
+
+    <!-- return: result -->
+    <text x="485" y="332" class="diagram__label">4 · CDP result</text>
+    <line x1="560" y1="338" x2="410" y2="338" class="diagram__link" marker-end="url(#br-arrow)" />
+
+    <text x="332" y="374" class="diagram__label">5 · tool_result · WebSocket</text>
+    <line x1="410" y1="380" x2="255" y2="380" class="diagram__link" marker-end="url(#br-arrow)" />
+
+    <text x="180" y="416" class="diagram__label">6 · ToolMessage</text>
+    <line x1="255" y1="422" x2="105" y2="422" class="diagram__link" marker-end="url(#br-arrow)" />
+  </svg>
+
+  <figcaption class="diagram-figure__caption">
+    <InlineText text={caption} />
+  </figcaption>
+</figure>

@@ -8,6 +8,11 @@ export const sections: ArticleSection[] = [
       "RAMEN is the system I built to run browser-capable agents on real user tasks. I started it from an empty repository in late December 2025 and spent the next four months turning a rough idea into a working implementation. It grew into two halves that talk over HTTP and SSE: a FastAPI backend that runs the agent loop, and a React SPA paired with a Chrome extension that gives the agent access to the user's browser. I owned every step of that arc: planning the product, designing the architecture and UX, building it out, and validating it as it grew.",
       "I worked from a Notion doc that I kept open alongside the code, full of research, dated checklists, tradeoffs, and ideas that did not survive contact with the implementation. The article below walks the same arc, told from the parts I was personally responsible for.",
     ],
+    diagram: {
+      kind: "system",
+      caption:
+        "The two halves and what connects them: one React codebase (SPA plus extension) reaches the FastAPI backend over SSE for chat and a `ws-ticket`-gated WebSocket for browser tools.",
+    },
   },
   {
     id: "name",
@@ -29,8 +34,13 @@ export const sections: ArticleSection[] = [
     paragraphs: [
       "The first backend slice was a single request path, but I planned for a real runtime from the start: configurable agents, a tool registry, multiple model providers, and room for subagents. I spent the first week laying out the backend around domain-driven boundaries: domain entities, use cases, repositories, presentation schemas, and infrastructure adapters, wired together through a central dependency-injection module. That early discipline paid off later, when I added LangGraph middleware, swapped LLM providers, and introduced subagents without rewriting the API surface.",
       "On top of that scaffolding I built the agent layer as a thin wrapper over LangChain and LangGraph rather than reimplementing them. I added a tool registry exposed through middleware, reasoning-effort handling for OpenAI's reasoning models, and provider-specific LLM profiles so each agent can carry its own model configuration. When the product needed to force a specific tool, I customised LangGraph's state to mutate `tool_choice` at bind time. LangChain's built-in `LLMToolSelectorMiddleware` solves a different problem (selecting which tools the model sees), so it did not fit.",
-      "Subagents came later. After reading Sydney Runkle's notes on multi-agent architectures, I decided RAMEN needed delegated execution rather than orchestrated handoffs. The new subagents share the same tool registry and streaming protocol as the main agent, which kept the frontend changes small and let me ship the capability incrementally.",
+      "Subagents came later. After reading [Sydney Runkle's article](https://www.langchain.com/blog/choosing-the-right-multi-agent-architecture) on multi-agent architectures, I decided RAMEN needed delegated execution rather than orchestrated handoffs. The new subagents share the same tool registry and streaming protocol as the main agent, which kept the frontend changes small and let me ship the capability incrementally.",
     ],
+    diagram: {
+      kind: "runtime",
+      caption:
+        "The backend's clean-architecture layers, and the agent runtime that turns a chat request into an SSE stream.",
+    },
   },
   {
     id: "conversation-loop",
@@ -47,6 +57,11 @@ export const sections: ArticleSection[] = [
       "Letting a remote agent use the user's local browser was the single most-discussed design problem in the project. Before writing any of it, I worked through five candidate paths in Notion: DevTools MCP, a network tunnel, a custom bridge, an extension paired with WebSocket RPC, and a Chromium-API-driven approach. I picked the extension and WebSocket route because it kept browser permissions in the user's hand, stayed inside Chrome's security model, and let me ship a working slice without operating shared infrastructure.",
       "From there the build split cleanly across the two repos. On the backend, I added a WebSocket relay with a one-time ticket handshake, browser-only routing safeguards, and live tool updates so the agent's view of browser state matches the user's. On the frontend, the extension surfaces controlled-tab context and writes it into ephemeral run context so the agent can act on whatever page the user is currently looking at. Once that core path was solid, I layered a browser-use subagent on top to delegate to a specialised browser agent through the same registry.",
     ],
+    diagram: {
+      kind: "browser-relay",
+      caption:
+        "One browser tool call, end to end: from the agent across the WebSocket into the extension's `chrome.debugger`, then back as a `ToolMessage`.",
+    },
   },
   {
     id: "browser-subagent",

@@ -1,0 +1,133 @@
+---
+import InlineText from "@/components/InlineText.astro";
+
+type Props = { caption: string };
+
+const { caption } = Astro.props;
+---
+
+<figure class="diagram-figure">
+  <svg
+    class="diagram"
+    viewBox="0 0 640 470"
+    role="img"
+    aria-labelledby="sys-title sys-desc"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title id="sys-title">RAMEN system overview</title>
+    <desc id="sys-desc">
+      Three planes. In the user's browser, a React UI and a Manifest-v3 service
+      worker drive the controlled tab through CDP. The React UI talks to the
+      FastAPI backend over HTTP and SSE for chat and over a WebSocket, gated by a
+      Redis ws-ticket, for browser tools. The backend runs a LangGraph agent and
+      subagents, and depends on MongoDB, Redis, LLM providers, Tavily, and
+      Cognito.
+    </desc>
+
+    <defs>
+      <marker
+        id="sys-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M0,0 L10,5 L0,10" class="diagram__arrowhead" />
+      </marker>
+      <marker
+        id="sys-arrow-soft"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M0,0 L10,5 L0,10" class="diagram__arrowhead diagram__arrowhead--soft" />
+      </marker>
+    </defs>
+
+    <!-- Plane: User's browser -->
+    <text x="120" y="28" class="diagram__group-title">USER'S BROWSER</text>
+    <rect x="16" y="40" width="208" height="414" rx="8" class="diagram__plane" />
+
+    <rect x="36" y="64" width="168" height="64" rx="5" class="diagram__node" />
+    <text x="120" y="92" class="diagram__node-title">React UI</text>
+    <text x="120" y="110" class="diagram__node-sub">SPA + extension side panel</text>
+
+    <rect x="36" y="186" width="168" height="64" rx="5" class="diagram__node" />
+    <text x="120" y="214" class="diagram__node-title">Service worker</text>
+    <text x="120" y="232" class="diagram__node-sub">MV3 · chrome.debugger</text>
+
+    <rect x="36" y="320" width="168" height="64" rx="5" class="diagram__node" />
+    <text x="120" y="356" class="diagram__node-title">Controlled tab</text>
+
+    <!-- intra-browser links -->
+    <line x1="120" y1="132" x2="120" y2="178" class="diagram__link" marker-end="url(#sys-arrow)" />
+    <line x1="120" y1="254" x2="120" y2="312" class="diagram__link" marker-end="url(#sys-arrow)" />
+    <text x="120" y="156" class="diagram__label">runtime msgs</text>
+    <text x="120" y="280" class="diagram__label">CDP</text>
+
+    <!-- Plane: FastAPI backend -->
+    <text x="320" y="28" class="diagram__group-title">FASTAPI BACKEND</text>
+    <rect x="252" y="40" width="136" height="414" rx="8" class="diagram__plane" />
+
+    <rect x="266" y="64" width="108" height="62" rx="5" class="diagram__node" />
+    <text x="320" y="90" class="diagram__node-title">API</text>
+    <text x="320" y="108" class="diagram__node-sub">routers · SSE · WS</text>
+
+    <rect x="266" y="186" width="108" height="62" rx="5" class="diagram__node" />
+    <text x="320" y="212" class="diagram__node-title">Agent runtime</text>
+    <text x="320" y="230" class="diagram__node-sub">LangGraph</text>
+
+    <rect x="266" y="320" width="108" height="62" rx="5" class="diagram__node" />
+    <text x="320" y="346" class="diagram__node-title">Subagents</text>
+    <text x="320" y="364" class="diagram__node-sub">browser · general</text>
+
+    <line x1="320" y1="134" x2="320" y2="178" class="diagram__link" marker-start="url(#sys-arrow)" marker-end="url(#sys-arrow)" />
+    <line x1="320" y1="256" x2="320" y2="312" class="diagram__link" marker-start="url(#sys-arrow)" marker-end="url(#sys-arrow)" />
+
+    <!-- Plane: Data & services -->
+    <text x="528" y="28" class="diagram__group-title">DATA &amp; SERVICES</text>
+    <rect x="416" y="40" width="208" height="414" rx="8" class="diagram__plane" />
+
+    <rect x="436" y="58" width="168" height="50" rx="5" class="diagram__node" />
+    <text x="520" y="80" class="diagram__node-title">Cognito</text>
+    <text x="520" y="97" class="diagram__node-sub">auth</text>
+
+    <rect x="436" y="140" width="168" height="50" rx="5" class="diagram__node" />
+    <text x="520" y="162" class="diagram__node-title">Redis</text>
+    <text x="520" y="179" class="diagram__node-sub">ws-ticket</text>
+
+    <rect x="436" y="222" width="168" height="50" rx="5" class="diagram__node" />
+    <text x="520" y="244" class="diagram__node-title">MongoDB</text>
+    <text x="520" y="261" class="diagram__node-sub">conversations · checkpointer</text>
+
+    <rect x="436" y="304" width="168" height="50" rx="5" class="diagram__node" />
+    <text x="520" y="326" class="diagram__node-title">LLM providers</text>
+    <text x="520" y="343" class="diagram__node-sub">OpenAI · Anthropic · Google</text>
+
+    <rect x="436" y="386" width="168" height="50" rx="5" class="diagram__node" />
+    <text x="520" y="408" class="diagram__node-title">Tavily</text>
+    <text x="520" y="425" class="diagram__node-sub">web search</text>
+
+    <!-- backend → services (API fans to the top three, Agent runtime to the rest) -->
+    <line x1="378" y1="86" x2="428" y2="83" class="diagram__link diagram__link--soft" marker-end="url(#sys-arrow-soft)" />
+    <line x1="378" y1="98" x2="428" y2="165" class="diagram__link diagram__link--soft" marker-end="url(#sys-arrow-soft)" />
+    <line x1="378" y1="110" x2="428" y2="247" class="diagram__link diagram__link--soft" marker-end="url(#sys-arrow-soft)" />
+    <line x1="378" y1="208" x2="428" y2="329" class="diagram__link diagram__link--soft" marker-end="url(#sys-arrow-soft)" />
+    <line x1="378" y1="222" x2="428" y2="411" class="diagram__link diagram__link--soft" marker-end="url(#sys-arrow-soft)" />
+
+    <!-- browser <-> backend transports -->
+    <line x1="212" y1="82" x2="258" y2="82" class="diagram__link" marker-start="url(#sys-arrow)" marker-end="url(#sys-arrow)" />
+    <text x="235" y="74" class="diagram__label diagram__label--strong">HTTP · SSE</text>
+    <line x1="212" y1="108" x2="258" y2="108" class="diagram__link" marker-start="url(#sys-arrow)" marker-end="url(#sys-arrow)" />
+    <text x="235" y="121" class="diagram__label diagram__label--strong">WebSocket</text>
+  </svg>
+
+  <figcaption class="diagram-figure__caption">
+    <InlineText text={caption} />
+  </figcaption>
+</figure>

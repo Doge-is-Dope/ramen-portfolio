@@ -1,6 +1,9 @@
 ---
 import ArticleFigure from "@/components/ArticleFigure.astro";
 import InlineText from "@/components/InlineText.astro";
+import BrowserRelayDiagram from "@/components/diagrams/BrowserRelayDiagram.astro";
+import RuntimeDiagram from "@/components/diagrams/RuntimeDiagram.astro";
+import SystemDiagram from "@/components/diagrams/SystemDiagram.astro";
 import type { ArticleSection } from "@/lib/types";
 
 type Props = {
@@ -8,30 +11,41 @@ type Props = {
 };
 
 const { sections } = Astro.props;
+
+const diagramComponents = {
+  system: SystemDiagram,
+  runtime: RuntimeDiagram,
+  "browser-relay": BrowserRelayDiagram,
+};
 ---
 
 <div class="article-body">
   {
-    sections.map((section) => (
-      <section id={section.id} class="article-section">
-        <h2 class="article-section__title">{section.title}</h2>
-        {section.paragraphs.map((paragraph) => (
-          <p class="article-section__paragraph">
-            <InlineText text={paragraph} />
-          </p>
-        ))}
-        {section.items && section.items.length > 0 ? (
-          <ul class="article-section__list">
-            {section.items.map((item) => (
-              <li>
-                <InlineText text={item} />
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        {section.figure ? <ArticleFigure {...section.figure} /> : null}
-      </section>
-    ))
+    sections.map((section) => {
+      const { diagram } = section;
+      const Diagram = diagram && diagramComponents[diagram.kind];
+      return (
+        <section id={section.id} class="article-section">
+          <h2 class="article-section__title">{section.title}</h2>
+          {section.paragraphs.map((paragraph) => (
+            <p class="article-section__paragraph">
+              <InlineText text={paragraph} />
+            </p>
+          ))}
+          {section.items && section.items.length > 0 ? (
+            <ul class="article-section__list">
+              {section.items.map((item) => (
+                <li>
+                  <InlineText text={item} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {section.figure ? <ArticleFigure {...section.figure} /> : null}
+          {diagram && Diagram ? <Diagram caption={diagram.caption} /> : null}
+        </section>
+      );
+    })
   }
 </div>
 
