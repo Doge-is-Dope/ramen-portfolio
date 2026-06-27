@@ -10,6 +10,26 @@ const { text } = Astro.props;
   splitInline(text).map((part) => {
     if (typeof part === "string") return part;
     if ("code" in part) return <code>{part.code}</code>;
+    if ("link" in part)
+      return (
+        <a href={part.link.href} target="_blank" rel="noopener noreferrer">
+          {part.link.text}
+        </a>
+      );
     return <strong>{part.strong}</strong>;
   })
 }
+
+<style>
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    transition: color 120ms ease;
+  }
+
+  a:hover {
+    color: var(--muted);
+  }
+</style>
