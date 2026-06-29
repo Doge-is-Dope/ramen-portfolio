@@ -1,0 +1,621 @@
+---
+import type { ArticleSection } from "@/lib/types";
+
+type Props = {
+  sections: Pick<ArticleSection, "id" | "title">[];
+};
+
+const { sections } = Astro.props;
+---
+
+<nav
+  class="article-navigation-rail"
+  aria-label="Case study sections"
+  data-article-navigation-rail
+>
+  <ol class="article-navigation-rail__list">
+    {
+      sections.map((section, index) => (
+        <li>
+          <a
+            class="article-navigation-rail__link"
+            href={`#${section.id}`}
+            aria-label={`Jump to ${section.title}`}
+            aria-current={index === 0 ? "location" : undefined}
+            data-rail-index={index}
+            data-section-id={section.id}
+            draggable="false"
+          >
+            <span class="article-navigation-rail__marker" aria-hidden="true" />
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  <span class="article-navigation-rail__label" aria-hidden="true"></span>
+</nav>
+
+<style>
+  .article-navigation-rail {
+    position: fixed;
+    top: 50%;
+    inset-inline-start: max(
+      var(--space-gutter),
+      calc((100% - var(--measure-shell)) / 2 + var(--space-gutter))
+    );
+    z-index: 40;
+    display: none;
+    color: var(--fg);
+    transform: translateY(-50%);
+    user-select: none;
+  }
+
+  .article-navigation-rail__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .article-navigation-rail__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 2.25rem;
+    min-height: 1.25rem;
+    color: inherit;
+    border-radius: var(--radius-xs);
+    text-decoration: none;
+  }
+
+  .article-navigation-rail__link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  /* Equal-length idle ticks; opacity tiers them. JS sets --marker-* inline to
+     magnify on hover, scrub, and focus, overriding the idle opacity. */
+  .article-navigation-rail__marker {
+    width: 1.625rem;
+    height: 0.125rem;
+    background: currentColor;
+    border-radius: var(--radius-pill);
+    opacity: var(--marker-opacity, 0.25);
+    /* 0.375rem / 1.625rem: idle length over marker width, mirrors SCALE_MIN in JS */
+    transform: scaleX(var(--marker-scale, 0.230769));
+    transform-origin: left center;
+    transition:
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* On-screen tier: brightens while the title is visible (IntersectionObserver). */
+  .article-navigation-rail__link[data-visible]
+    .article-navigation-rail__marker {
+    opacity: var(--marker-opacity, 0.9);
+  }
+
+  /* Active tier, brightest. After data-visible so it wins when a tick is both. */
+  .article-navigation-rail__link[aria-current]
+    .article-navigation-rail__marker {
+    opacity: var(--marker-opacity, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .article-navigation-rail__marker {
+      transition-duration: 1ms;
+    }
+  }
+
+  /* One shared label, glided to the peak tick (--label-y) rather than a tooltip
+     per tick. --label-x carries the reveal slide. */
+  .article-navigation-rail__label {
+    position: absolute;
+    top: 0;
+    inset-inline-start: calc(100% + var(--space-2));
+    max-width: min(18rem, calc(100vw - 5rem));
+    padding: 0.375rem var(--space-2);
+    overflow: hidden;
+    color: var(--bg);
+    background: color-mix(in srgb, var(--fg) 94%, transparent);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-meta);
+    font-weight: var(--fw-medium);
+    line-height: 1.25;
+    opacity: 0;
+    pointer-events: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translate(var(--label-x, -0.25rem), calc(var(--label-y, 0px) - 50%));
+    transition:
+      opacity 140ms ease,
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .article-navigation-rail[data-label] .article-navigation-rail__label {
+    opacity: 1;
+    --label-x: 0px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .article-navigation-rail__label {
+      transition-duration: 1ms;
+    }
+  }
+
+  @media (min-width: 56rem) {
+    .article-navigation-rail {
+      display: block;
+      animation: article-navigation-rail-in 150ms ease-out both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .article-navigation-rail {
+      animation: none;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .article-navigation-rail__link {
+      cursor: pointer;
+    }
+
+    .article-navigation-rail[data-scrubbing] {
+      cursor: ns-resize;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .article-navigation-rail__label {
+      color: Canvas;
+      background: CanvasText;
+      border-color: CanvasText;
+    }
+  }
+
+  @media print {
+    .article-navigation-rail {
+      display: none;
+    }
+  }
+
+  @keyframes article-navigation-rail-in {
+    from {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  type RailWindow = Window & {
+    __articleNavigationRailEventsBound?: boolean;
+    __articleNavigationRailCleanup?: () => void;
+  };
+
+  const railWindow = window as RailWindow;
+
+  // SCALE_MIN mirrors the CSS --marker-scale fallback (0.375 / 1.625).
+  const SCALE_MIN = 0.375 / 1.625;
+  const SCALE_MAX = 1;
+  const OPACITY_MIN = 0.3;
+  const OPACITY_MAX = 1;
+  const RADIUS_SPACING_FACTOR = 3.5;
+  const READING_LINE_RATIO = 0.3;
+  const BOTTOM_EPSILON = 2;
+  const SCRUB_START_PX = 4;
+
+  function teardownArticleNavigationRail() {
+    railWindow.__articleNavigationRailCleanup?.();
+    delete railWindow.__articleNavigationRailCleanup;
+  }
+
+  function setupArticleNavigationRail() {
+    teardownArticleNavigationRail();
+
+    const rail = document.querySelector<HTMLElement>(
+      "[data-article-navigation-rail]",
+    );
+    if (!rail) return;
+
+    const links = Array.from(
+      rail.querySelectorAll<HTMLAnchorElement>("[data-rail-index]"),
+    );
+    const targets = links.map((link) => {
+      const id = link.dataset.sectionId;
+      return id ? document.getElementById(id) : null;
+    });
+    if (links.length === 0 || targets.some((target) => target == null)) return;
+
+    const sections = targets as HTMLElement[];
+    // Highlight follows the heading, not the section: lit only while the title shows.
+    const titles = sections.map(
+      (section) =>
+        section.querySelector<HTMLElement>(".article-section__title") ?? section,
+    );
+    const label = rail.querySelector<HTMLElement>(
+      ".article-navigation-rail__label",
+    );
+    const controller = new AbortController();
+    const { signal } = controller;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    );
+
+    let pointerId: number | null = null;
+    let pointerStartY = 0;
+    let scrubbing = false;
+    let scrubIndex: number | null = null;
+    let suppressClick = false;
+    let magnifyRaf = 0;
+    let pendingMagnifyY: number | null = null;
+    let labelPeak = -1;
+
+    // Tick centers move only on resize (the rail is fixed), so cache them.
+    let centers: number[] = [];
+    let radius = 0;
+    let railTop = 0;
+    const measureGeometry = () => {
+      centers = links.map((link) => {
+        const rect = link.getBoundingClientRect();
+        return rect.top + rect.height / 2;
+      });
+      const spacing =
+        centers.length > 1 ? Math.abs(centers[1] - centers[0]) : 24;
+      radius = spacing * RADIUS_SPACING_FACTOR;
+      railTop = rail.getBoundingClientRect().top;
+    };
+
+    const linkIndex = (link: HTMLElement) => Number(link.dataset.railIndex);
+
+    // Cosine bell, 1 at the pointer falling to 0 at the radius edge.
+    const falloff = (distance: number) => {
+      if (distance >= radius) return 0;
+      return (Math.cos((Math.PI * distance) / radius) + 1) / 2;
+    };
+
+    const showLabelFor = (index: number) => {
+      if (!label) return;
+      const firstReveal = !rail.hasAttribute("data-label");
+      const y = centers[index] - railTop;
+      if (firstReveal) {
+        // First reveal snaps into place so it fades in where it belongs; later
+        // moves glide and show the cursor direction.
+        label.style.transition = "none";
+        rail.style.setProperty("--label-y", `${y}px`);
+        void label.offsetWidth; // commit the snap before re-enabling transition
+        label.style.transition = "";
+      } else {
+        rail.style.setProperty("--label-y", `${y}px`);
+      }
+      if (index !== labelPeak) {
+        labelPeak = index;
+        label.textContent = titles[index].textContent?.trim() ?? "";
+      }
+      rail.setAttribute("data-label", "");
+    };
+
+    const hideLabel = () => {
+      rail.removeAttribute("data-label");
+      labelPeak = -1;
+    };
+
+    const clearMagnify = () => {
+      for (const link of links) {
+        link.style.removeProperty("--marker-scale");
+        link.style.removeProperty("--marker-opacity");
+      }
+      hideLabel();
+    };
+
+    // Scale every tick by its distance to centerY; returns the peak index.
+    const magnifyAround = (centerY: number) => {
+      let peak = 0;
+      let peakFalloff = -1;
+      for (const [index, link] of links.entries()) {
+        const falloffAmount = falloff(Math.abs(centerY - centers[index]));
+        link.style.setProperty(
+          "--marker-scale",
+          (SCALE_MIN + (SCALE_MAX - SCALE_MIN) * falloffAmount).toFixed(4),
+        );
+        link.style.setProperty(
+          "--marker-opacity",
+          (OPACITY_MIN + (OPACITY_MAX - OPACITY_MIN) * falloffAmount).toFixed(3),
+        );
+        if (falloffAmount > peakFalloff) {
+          peakFalloff = falloffAmount;
+          peak = index;
+        }
+      }
+      showLabelFor(peak);
+      return peak;
+    };
+
+    // rAF-batched: pointer moves fire faster than we need to paint.
+    const scheduleMagnify = (centerY: number | null) => {
+      pendingMagnifyY = centerY;
+      if (magnifyRaf) return;
+      magnifyRaf = requestAnimationFrame(() => {
+        magnifyRaf = 0;
+        if (pendingMagnifyY == null) clearMagnify();
+        else magnifyAround(pendingMagnifyY);
+      });
+    };
+
+    // Nearest tick from cached centers (no layout read); falloff is monotonic,
+    // so this equals the magnify peak.
+    const nearestIndex = (centerY: number) => {
+      let best = 0;
+      let bestDistance = Number.POSITIVE_INFINITY;
+      for (const [index, center] of centers.entries()) {
+        const distance = Math.abs(centerY - center);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = index;
+        }
+      }
+      return best;
+    };
+
+    const setActive = (index: number) => {
+      if (index < 0 || index >= links.length) return;
+      for (const [i, link] of links.entries()) {
+        if (i === index) {
+          link.setAttribute("aria-current", "location");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      }
+    };
+
+    const computeActiveIndex = () => {
+      const viewport = window.innerHeight;
+      const lastIndex = sections.length - 1;
+      const maxScroll = document.documentElement.scrollHeight - viewport;
+      const scrollable = maxScroll > 0;
+      // At the bottom the last section is the one being read. Guard on scrollable
+      // so a short page doesn't read as permanently bottomed-out.
+      if (scrollable && window.scrollY >= maxScroll - BOTTOM_EPSILON) {
+        return lastIndex;
+      }
+      const readingLine = viewport * READING_LINE_RATIO;
+      // A short final section may never reach the reading line before scroll ends;
+      // activate it once the remaining scroll can't bring it there.
+      const lastTop = sections[lastIndex].getBoundingClientRect().top;
+      if (
+        scrollable &&
+        lastTop > readingLine &&
+        lastTop < viewport &&
+        maxScroll - window.scrollY < lastTop - readingLine
+      ) {
+        return lastIndex;
+      }
+      // Otherwise: the last section whose top has passed the reading line.
+      let nextIndex = 0;
+      for (const [index, section] of sections.entries()) {
+        if (section.getBoundingClientRect().top > readingLine) break;
+        nextIndex = index;
+      }
+      return nextIndex;
+    };
+
+    let activeRaf = 0;
+    const scheduleActive = () => {
+      if (activeRaf) return;
+      activeRaf = requestAnimationFrame(() => {
+        activeRaf = 0;
+        setActive(computeActiveIndex());
+      });
+    };
+
+    // data-visible is pure intersection: let an observer toggle it instead of
+    // measuring every title each frame.
+    const visibilityObserver = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const index = titles.indexOf(entry.target as HTMLElement);
+        if (index !== -1) {
+          links[index].toggleAttribute("data-visible", entry.isIntersecting);
+        }
+      }
+    });
+    for (const title of titles) visibilityObserver.observe(title);
+
+    window.addEventListener("scroll", scheduleActive, {
+      passive: true,
+      signal,
+    });
+    window.addEventListener(
+      "resize",
+      () => {
+        measureGeometry();
+        scheduleActive();
+      },
+      { signal },
+    );
+    // Re-measure when the rail's own size changes (font-size, zoom, dev HMR),
+    // which window resize misses, so the label and magnify stay aligned.
+    const geometryObserver = new ResizeObserver(() => measureGeometry());
+    geometryObserver.observe(rail);
+    measureGeometry();
+    setActive(computeActiveIndex());
+
+    const updateHash = (index: number) => {
+      const url = new URL(window.location.href);
+      url.hash = sections[index].id;
+      window.history.replaceState(window.history.state, "", url);
+    };
+
+    const navigateTo = (
+      index: number,
+      behavior: ScrollBehavior,
+      { updateUrl = true } = {},
+    ) => {
+      setActive(index);
+      sections[index].scrollIntoView({ behavior, block: "start" });
+      if (updateUrl) updateHash(index);
+    };
+
+    for (const [index, link] of links.entries()) {
+      link.addEventListener(
+        "click",
+        (event) => {
+          event.preventDefault();
+          if (suppressClick) return;
+          navigateTo(index, reduceMotion.matches ? "auto" : "smooth");
+        },
+        { signal },
+      );
+    }
+
+    rail.addEventListener(
+      "focusin",
+      (event) => {
+        const link =
+          event.target instanceof Element
+            ? event.target.closest<HTMLElement>("[data-rail-index]")
+            : null;
+        if (link) magnifyAround(centers[linkIndex(link)]);
+      },
+      { signal },
+    );
+
+    rail.addEventListener(
+      "focusout",
+      (event) => {
+        const nextLink =
+          event.relatedTarget instanceof Element
+            ? event.relatedTarget.closest<HTMLElement>("[data-rail-index]")
+            : null;
+        if (nextLink && rail.contains(nextLink)) {
+          magnifyAround(centers[linkIndex(nextLink)]);
+        } else {
+          clearMagnify();
+        }
+      },
+      { signal },
+    );
+
+    const finishPointerInteraction = (event: PointerEvent) => {
+      if (pointerId == null || event.pointerId !== pointerId) return;
+
+      const finishedScrubbing = scrubbing;
+      const finishedIndex = scrubIndex;
+      pointerId = null;
+      scrubbing = false;
+      scrubIndex = null;
+      rail.removeAttribute("data-scrubbing");
+
+      if (rail.hasPointerCapture(event.pointerId)) {
+        rail.releasePointerCapture(event.pointerId);
+      }
+      // Keep the peak tick under the cursor after release; settle back only once
+      // the pointer leaves the rail.
+      if (finePointer.matches) magnifyAround(event.clientY);
+      else clearMagnify();
+      if (finishedScrubbing && finishedIndex != null) {
+        updateHash(finishedIndex);
+      }
+      window.setTimeout(() => {
+        suppressClick = false;
+      }, 0);
+    };
+
+    rail.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (!finePointer.matches || event.button !== 0) return;
+        const link =
+          event.target instanceof Element
+            ? event.target.closest<HTMLAnchorElement>("[data-rail-index]")
+            : null;
+        if (!link) return;
+
+        pointerId = event.pointerId;
+        pointerStartY = event.clientY;
+        scrubIndex = Number(link.dataset.railIndex);
+      },
+      { signal },
+    );
+
+    // Hover: magnify around the pointer; the label glides via its own transition.
+    const onHoverMove = (event: PointerEvent) => {
+      if (!finePointer.matches) return;
+      scheduleMagnify(event.clientY);
+    };
+
+    // Drag to scroll. Visual via the rAF path; navigation via the cached nearest
+    // tick (no layout read).
+    const onScrubMove = (event: PointerEvent) => {
+      if (event.pointerId !== pointerId) return;
+      if (
+        !scrubbing &&
+        Math.abs(event.clientY - pointerStartY) < SCRUB_START_PX
+      ) {
+        return;
+      }
+      event.preventDefault();
+      const startedScrubbing = !scrubbing;
+      if (!scrubbing) {
+        scrubbing = true;
+        suppressClick = true;
+        // Capture only once scrubbing starts: capturing on pointerdown retargets
+        // the click and breaks tap-to-jump.
+        rail.setPointerCapture(event.pointerId);
+        rail.setAttribute("data-scrubbing", "");
+      }
+      scheduleMagnify(event.clientY);
+      const next = nearestIndex(event.clientY);
+      if (!startedScrubbing && next === scrubIndex) return;
+      scrubIndex = next;
+      navigateTo(next, "auto", { updateUrl: false });
+    };
+
+    rail.addEventListener(
+      "pointermove",
+      (event) => {
+        if (pointerId == null) onHoverMove(event);
+        else onScrubMove(event);
+      },
+      { signal },
+    );
+
+    rail.addEventListener(
+      "pointerleave",
+      () => {
+        if (pointerId != null) return;
+        scheduleMagnify(null);
+      },
+      { signal },
+    );
+
+    // Terminate on window: before scrubbing captures the pointer, a release off
+    // the rail would never reach a rail listener and leave pointerId stuck.
+    for (const eventName of [
+      "pointerup",
+      "pointercancel",
+      "lostpointercapture",
+    ] as const) {
+      window.addEventListener(eventName, finishPointerInteraction, { signal });
+    }
+
+    railWindow.__articleNavigationRailCleanup = () => {
+      controller.abort();
+      visibilityObserver.disconnect();
+      geometryObserver.disconnect();
+      if (magnifyRaf) cancelAnimationFrame(magnifyRaf);
+      if (activeRaf) cancelAnimationFrame(activeRaf);
+    };
+  }
+
+  if (!railWindow.__articleNavigationRailEventsBound) {
+    railWindow.__articleNavigationRailEventsBound = true;
+    document.addEventListener("astro:before-swap", teardownArticleNavigationRail);
+    document.addEventListener("astro:page-load", setupArticleNavigationRail);
+  }
+
+  setupArticleNavigationRail();
+</script>

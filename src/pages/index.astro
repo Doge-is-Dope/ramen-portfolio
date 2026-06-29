@@ -1,6 +1,7 @@
 ---
 import ArticleBody from "@/components/ArticleBody.astro";
 import ArticleHero from "@/components/ArticleHero.astro";
+import ArticleNavigationRail from "@/components/ArticleNavigationRail.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import TopBar from "@/components/TopBar.astro";
 import { sections } from "@/data/article";
@@ -17,6 +18,7 @@ const description =
 
   <main id="main-content" class="article-shell">
     <ArticleHero profile={profile} />
+    <ArticleNavigationRail sections={sections} />
     <ArticleBody sections={sections} />
   </main>
 

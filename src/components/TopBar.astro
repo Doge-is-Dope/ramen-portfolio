@@ -242,6 +242,15 @@ const { activePage } = Astro.props;
 
       event.preventDefault();
       scrollToTop();
+
+      // Drop any anchor if scrolling to the top.
+      if (window.location.hash) {
+        window.history.replaceState(
+          window.history.state,
+          "",
+          window.location.pathname + window.location.search,
+        );
+      }
     });
   };
 
