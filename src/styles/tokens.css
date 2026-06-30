@@ -1,80 +1,81 @@
 :root {
-  color-scheme: light;
+	color-scheme: light;
 
-  --site-font-sans: "Inter", ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+	--site-font-sans:
+		"Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+		"Segoe UI", "Helvetica Neue", Arial, sans-serif;
 
-  --bg: #ffffff;
-  --fg: #000000;
-  --muted: #6b7280;
-  --rule: #e5e7eb;
-  --selection-bg: var(--fg);
-  --selection-fg: var(--bg);
-  --code-bg: rgba(0, 0, 0, 0.06);
+	--bg: #ffffff;
+	--fg: #000000;
+	--muted: #6b7280;
+	--rule: #e5e7eb;
+	--selection-bg: var(--fg);
+	--selection-fg: var(--bg);
+	--code-bg: rgba(0, 0, 0, 0.06);
 
-  --font-sans: var(--site-font-sans);
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-    monospace;
+	--font-sans: var(--site-font-sans);
+	--font-mono:
+		ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
-  --fs-caption: 0.875rem;
-  --fs-meta: 0.875rem;
-  --fs-row-title: 1rem;
-  --fs-body: 1.0625rem;
-  --fs-dek: clamp(1.125rem, 0.95rem + 0.55vw, 1.225rem);
-  --fs-h2: clamp(1.65rem, 1.3rem + 1.2vw, 1.875rem);
-  --fs-h1: clamp(2.5rem, 1.6rem + 3.2vw, 4rem);
+	--fs-caption: 0.875rem;
+	--fs-meta: 0.875rem;
+	--fs-row-title: 1rem;
+	--fs-body: 1.0625rem;
+	--fs-dek: clamp(1.125rem, 0.95rem + 0.55vw, 1.225rem);
+	--fs-h2: clamp(1.65rem, 1.3rem + 1.2vw, 1.875rem);
+	--fs-h1: clamp(2.5rem, 1.6rem + 3.2vw, 4rem);
 
-  --lh-tight: 1.05;
-  --lh-snug: 1.2;
-  --lh-body: 1.65;
-  --lh-ui: 1.55;
+	--lh-tight: 1.05;
+	--lh-snug: 1.2;
+	--lh-body: 1.65;
+	--lh-ui: 1.55;
 
-  --fw-regular: 400;
-  --fw-medium: 500;
+	--fw-regular: 400;
+	--fw-medium: 500;
 
-  --tracking-tight: -0.03em;
-  --tracking-snug: -0.01em;
+	--tracking-tight: -0.03em;
+	--tracking-snug: -0.01em;
 
-  /* Spacing scale: step suffix counts 0.25rem (4px) units */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-7: 1.75rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --space-14: 3.5rem;
-  --space-16: 4rem;
-  --space-24: 6rem;
+	/* Spacing scale: step suffix counts 0.25rem (4px) units */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 0.75rem;
+	--space-4: 1rem;
+	--space-5: 1.25rem;
+	--space-6: 1.5rem;
+	--space-7: 1.75rem;
+	--space-8: 2rem;
+	--space-10: 2.5rem;
+	--space-12: 3rem;
+	--space-14: 3.5rem;
+	--space-16: 4rem;
+	--space-24: 6rem;
 
-  /* Semantic spacing, built on the scale */
-  --space-gutter: var(--space-6);
-  --space-section: 5.5rem;
-  --space-hero-y: clamp(5rem, 3rem + 6vw, 7rem);
+	/* Semantic spacing, built on the scale */
+	--space-gutter: var(--space-6);
+	--space-section: 5.5rem;
+	--space-hero-y: clamp(5rem, 3rem + 6vw, 7rem);
 
-  /* Icon / inline-glyph sizes */
-  --icon-xs: 0.75rem;
-  --icon-sm: 0.875rem;
-  --icon-md: 1rem;
+	/* Icon / inline-glyph sizes */
+	--icon-xs: 0.75rem;
+	--icon-sm: 0.875rem;
+	--icon-md: 1rem;
 
-  --measure-shell: 80rem;
-  --measure-hero: 44rem;
-  --measure-body: 40rem;
+	--measure-shell: 80rem;
+	--measure-hero: 44rem;
+	--measure-body: 40rem;
 
-  --radius-xs: 0.25rem;
-  --radius-sm: 0.375rem;
-  --radius-pill: 999px;
+	--radius-xs: 0.25rem;
+	--radius-sm: 0.375rem;
+	--radius-pill: 999px;
 }
 
 [data-theme="dark"] {
-  color-scheme: dark;
+	color-scheme: dark;
 
-  --bg: #0a0a0a;
-  --fg: #f4f4f5;
-  --muted: #9ca3af;
-  --rule: #262626;
-  --code-bg: rgba(255, 255, 255, 0.08);
+	--bg: #0a0a0a;
+	--fg: #f4f4f5;
+	--muted: #9ca3af;
+	--rule: #262626;
+	--code-bg: rgba(255, 255, 255, 0.08);
 }

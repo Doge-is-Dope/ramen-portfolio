@@ -4,15 +4,15 @@ import { withBase } from "@/lib/url";
 import "@/styles/global.css";
 
 type Props = {
-  title: string;
-  description: string;
-  robots?: string;
+	title: string;
+	description: string;
+	robots?: string;
 };
 
 const { title, description, robots } = Astro.props;
 const canonicalPath = Astro.url.pathname.endsWith("/")
-  ? Astro.url.pathname
-  : `${Astro.url.pathname}/`;
+	? Astro.url.pathname
+	: `${Astro.url.pathname}/`;
 const canonical = new URL(canonicalPath, Astro.site);
 const favicon = withBase("/favicon.svg");
 const inter400 = withBase("/fonts/inter-latin-400.woff2");

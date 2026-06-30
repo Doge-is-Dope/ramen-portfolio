@@ -9,10 +9,10 @@ import "@/styles/work.css";
 
 const title = "RAMEN Selected Work";
 const description =
-  "Selected RAMEN project work by Clement Liang across agent architecture, streaming, browser automation, chat UX, and delivery quality.";
+	"Selected RAMEN project work by Clement Liang across agent architecture, streaming, browser automation, chat UX, and delivery quality.";
 const sortedWork = [...work].sort((a, b) => {
-  if (a.shippedAt === b.shippedAt) return a.id.localeCompare(b.id);
-  return b.shippedAt.localeCompare(a.shippedAt);
+	if (a.shippedAt === b.shippedAt) return a.id.localeCompare(b.id);
+	return b.shippedAt.localeCompare(a.shippedAt);
 });
 ---
 

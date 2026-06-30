@@ -1,21 +1,21 @@
 ---
 import ArticleFigure from "@/components/ArticleFigure.astro";
-import InlineText from "@/components/InlineText.astro";
 import BrowserRelayDiagram from "@/components/diagrams/BrowserRelayDiagram.astro";
 import RuntimeDiagram from "@/components/diagrams/RuntimeDiagram.astro";
 import SystemDiagram from "@/components/diagrams/SystemDiagram.astro";
+import InlineText from "@/components/InlineText.astro";
 import type { ArticleSection } from "@/lib/types";
 
 type Props = {
-  sections: ArticleSection[];
+	sections: ArticleSection[];
 };
 
 const { sections } = Astro.props;
 
 const diagramComponents = {
-  system: SystemDiagram,
-  runtime: RuntimeDiagram,
-  "browser-relay": BrowserRelayDiagram,
+	system: SystemDiagram,
+	runtime: RuntimeDiagram,
+	"browser-relay": BrowserRelayDiagram,
 };
 ---
 
