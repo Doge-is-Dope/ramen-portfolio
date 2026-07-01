@@ -191,8 +191,9 @@ const { sections } = Astro.props;
 </style>
 
 <script>
+  import { initOnce } from "@/lib/init-once";
+
   type RailWindow = Window & {
-    __articleNavigationRailEventsBound?: boolean;
     __articleNavigationRailCleanup?: () => void;
   };
 
@@ -611,11 +612,10 @@ const { sections } = Astro.props;
     };
   }
 
-  if (!railWindow.__articleNavigationRailEventsBound) {
-    railWindow.__articleNavigationRailEventsBound = true;
+  initOnce("articleNavigationRail", () => {
     document.addEventListener("astro:before-swap", teardownArticleNavigationRail);
     document.addEventListener("astro:page-load", setupArticleNavigationRail);
-  }
+  });
 
   setupArticleNavigationRail();
 </script>

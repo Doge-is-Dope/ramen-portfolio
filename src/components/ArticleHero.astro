@@ -65,6 +65,10 @@ const headlineAfter = headlineRest.join("RAMEN");
     text-wrap: balance;
   }
 
+  .article-hero__brand.is-shimmering::before {
+    animation-duration: 1.2s;
+  }
+
   .article-hero__dek {
     margin: var(--space-7) auto 0;
     max-width: 44ch;
@@ -76,16 +80,16 @@ const headlineAfter = headlineRest.join("RAMEN");
 </style>
 
 <script>
+  import { initOnce } from "@/lib/init-once";
   import { playShimmer } from "@/lib/wordmark-shimmer";
 
   const playHeroShimmer = () => {
-    playShimmer(document.querySelector<HTMLElement>(".article-hero__brand"));
+    const brand = document.querySelector<HTMLElement>(".article-hero__brand");
+    document.fonts.ready.then(() => requestAnimationFrame(() => playShimmer(brand)));
   };
 
-  const win = window as typeof window & { __heroShimmerInit?: boolean };
-  if (!win.__heroShimmerInit) {
-    win.__heroShimmerInit = true;
-    document.addEventListener("astro:page-load", playHeroShimmer);
-  }
+  initOnce("heroShimmer", () =>
+    document.addEventListener("astro:page-load", playHeroShimmer),
+  );
   playHeroShimmer();
 </script>

@@ -71,6 +71,9 @@
 
   .theme-toggle__icon {
     display: none;
+  }
+
+  :global([data-theme-switching]) .theme-toggle__icon {
     view-transition-name: theme-toggle;
   }
 
@@ -90,6 +93,8 @@
 </style>
 
 <script>
+  import { initOnce } from "@/lib/init-once";
+
   const STORAGE_KEY = "theme";
 
   type DocumentWithVT = Document & {
@@ -139,10 +144,7 @@
   const syncOnLoad = () =>
     syncLabel(document.documentElement.getAttribute("data-theme") ?? "light");
 
-  const win = window as typeof window & { __themeToggleInit?: boolean };
-  if (!win.__themeToggleInit) {
-    win.__themeToggleInit = true;
-
+  initOnce("themeToggle", () => {
     document.addEventListener("click", (event) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
@@ -168,7 +170,7 @@
     });
 
     document.addEventListener("astro:page-load", syncOnLoad);
-  }
+  });
 
   syncOnLoad();
 </script>

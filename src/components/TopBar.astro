@@ -180,6 +180,7 @@ const { activePage } = Astro.props;
 </style>
 
 <script>
+  import { initOnce } from "@/lib/init-once";
   import { bindHoverShimmer } from "@/lib/wordmark-shimmer";
 
   const setupWordmarkShimmer = () => {
@@ -254,12 +255,10 @@ const { activePage } = Astro.props;
     });
   };
 
-  const win = window as typeof window & { __wordmarkShimmerInit?: boolean };
-  if (!win.__wordmarkShimmerInit) {
-    win.__wordmarkShimmerInit = true;
+  initOnce("wordmarkShimmer", () => {
     document.addEventListener("astro:page-load", setupWordmarkShimmer);
     document.addEventListener("astro:page-load", setupSamePageScroll);
-  }
+  });
   setupWordmarkShimmer();
   setupSamePageScroll();
 </script>
