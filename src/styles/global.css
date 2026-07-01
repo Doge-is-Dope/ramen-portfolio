@@ -88,8 +88,6 @@ code {
 		border-color 240ms ease;
 }
 
-/* Inline-SVG diagrams (src/components/diagrams/): frameless, nodes are subtle
-   filled cards that track the theme via --fg / --muted. */
 .diagram {
 	--d-card: rgba(0, 0, 0, 0.08);
 }
@@ -112,7 +110,6 @@ code {
 	font-family: var(--font-sans);
 }
 
-/* Smooth the palette swap on theme toggle, matching the 240ms used elsewhere. */
 .diagram :is(rect, line, path, text) {
 	transition:
 		fill 240ms ease,
@@ -126,7 +123,6 @@ code {
 	color: var(--muted);
 }
 
-/* Regions are carried by their titles and card grouping, not an outline. */
 .diagram__plane,
 .diagram__group {
 	fill: none;
@@ -142,7 +138,6 @@ code {
 	fill: var(--muted);
 	font-size: 11px;
 	font-weight: var(--fw-medium);
-	letter-spacing: 0.1em;
 	text-anchor: middle;
 }
 
@@ -201,15 +196,10 @@ code {
 	letter-spacing: 0.02em;
 }
 
-/* In SVG, a CSS text-anchor wins over the inline attribute, so left-aligned
-   labels need this class rather than text-anchor="start". Declared last so it
-   overrides the centered base classes. */
 .diagram__anchor-start {
 	text-anchor: start;
 }
 
-/* Denser diagrams shrink node titles so long real names (LangChainAgentService,
-   ChatEventSerializer) fit their chips. */
 .diagram--compact .diagram__node-title {
 	font-size: 12px;
 }
@@ -218,8 +208,6 @@ code {
 	scroll-margin-top: var(--space-section);
 }
 
-/* Theme flip keeps root out of the VT (see ThemeToggle) so Safari holds the
-   live backdrop-filter; the color change rides this transition instead. */
 :root[data-theme-switching] {
 	view-transition-name: none;
 }
@@ -273,8 +261,6 @@ code {
 	}
 }
 
-/* Iridescent sheen swept across a wordmark; toggle .is-shimmering to play once.
-   Needs data-text="..." on the element so the ::before overlay can clip it. */
 .wordmark-shimmer {
 	position: relative;
 	display: inline-block;

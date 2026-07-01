@@ -37,9 +37,8 @@ const { caption } = Astro.props;
       </marker>
     </defs>
 
-    <!-- Layer: Presentation -->
     <rect x="24" y="44" width="600" height="74" rx="6" class="diagram__group" />
-    <text x="38" y="68" class="diagram__group-title diagram__anchor-start">PRESENTATION</text>
+    <text x="38" y="68" class="diagram__group-title diagram__anchor-start">Presentation</text>
     <rect x="38" y="78" width="180" height="28" rx="4" class="diagram__node" />
     <text x="128" y="96" class="diagram__node-title">routers</text>
     <rect x="234" y="78" width="180" height="28" rx="4" class="diagram__node" />
@@ -47,9 +46,8 @@ const { caption } = Astro.props;
     <rect x="430" y="78" width="180" height="28" rx="4" class="diagram__node" />
     <text x="520" y="96" class="diagram__node-title">WS handler</text>
 
-    <!-- Layer: Application -->
     <rect x="24" y="132" width="600" height="74" rx="6" class="diagram__group" />
-    <text x="38" y="156" class="diagram__group-title diagram__anchor-start">APPLICATION</text>
+    <text x="38" y="156" class="diagram__group-title diagram__anchor-start">Application</text>
     <rect x="38" y="166" width="180" height="28" rx="4" class="diagram__node" />
     <text x="128" y="184" class="diagram__node-title">ChatUseCase</text>
     <rect x="234" y="166" width="180" height="28" rx="4" class="diagram__node" />
@@ -57,9 +55,8 @@ const { caption } = Astro.props;
     <rect x="430" y="166" width="180" height="28" rx="4" class="diagram__node" />
     <text x="520" y="184" class="diagram__node-title">events</text>
 
-    <!-- Layer: Infrastructure -->
     <rect x="24" y="220" width="600" height="74" rx="6" class="diagram__group" />
-    <text x="38" y="244" class="diagram__group-title diagram__anchor-start">INFRASTRUCTURE</text>
+    <text x="38" y="244" class="diagram__group-title diagram__anchor-start">Infrastructure</text>
     <rect x="38" y="254" width="180" height="28" rx="4" class="diagram__node" />
     <text x="128" y="272" class="diagram__node-title">LangChainAgentService</text>
     <rect x="234" y="254" width="180" height="28" rx="4" class="diagram__node" />
@@ -67,9 +64,8 @@ const { caption } = Astro.props;
     <rect x="430" y="254" width="180" height="28" rx="4" class="diagram__node" />
     <text x="520" y="272" class="diagram__node-title">Mongo repos · ws-ticket</text>
 
-    <!-- Layer: Domain -->
     <rect x="24" y="308" width="600" height="74" rx="6" class="diagram__group" />
-    <text x="38" y="332" class="diagram__group-title diagram__anchor-start">DOMAIN</text>
+    <text x="38" y="332" class="diagram__group-title diagram__anchor-start">Domain</text>
     <rect x="38" y="342" width="180" height="28" rx="4" class="diagram__node" />
     <text x="128" y="360" class="diagram__node-title">entities</text>
     <rect x="234" y="342" width="180" height="28" rx="4" class="diagram__node" />
@@ -77,9 +73,8 @@ const { caption } = Astro.props;
     <rect x="430" y="342" width="180" height="28" rx="4" class="diagram__node" />
     <text x="520" y="360" class="diagram__node-title">types</text>
 
-    <!-- Agent runtime pipeline -->
     <line x1="24" y1="408" x2="624" y2="408" class="diagram__link--soft" stroke-dasharray="4 3" />
-    <text x="38" y="430" class="diagram__group-title diagram__anchor-start">AGENT RUNTIME · request → stream</text>
+    <text x="38" y="430" class="diagram__group-title diagram__anchor-start">Agent Runtime · request → stream</text>
 
     <rect x="38" y="444" width="118" height="40" rx="5" class="diagram__node" />
     <text x="97" y="468" class="diagram__node-title">LangGraph loop</text>

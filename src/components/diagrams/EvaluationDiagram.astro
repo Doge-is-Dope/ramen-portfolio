@@ -1,0 +1,132 @@
+---
+import InlineText from "@/components/InlineText.astro";
+
+type Props = { caption: string };
+
+const { caption } = Astro.props;
+---
+
+<aside class="evaluation-callout">
+  <p class="evaluation-callout__label">Observed in Traces</p>
+  <p class="evaluation-callout__body">
+    The suite is seeded from repeatable trace failures: empty-name clicks,
+    position-based refs, login-wall fabrication, and placeholder values.
+  </p>
+</aside>
+
+<figure class="diagram-figure">
+  <svg
+    class="diagram diagram--compact"
+    viewBox="0 0 640 308"
+    role="img"
+    aria-labelledby="he-title he-desc"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title id="he-title">RAMEN eval-driven hardening loop</title>
+    <desc id="he-desc">
+      An eval suite, seeded from repeatable browser-subagent trace failures such
+      as empty-name clicks and placeholder values, is scored on five axes. The
+      suite gates fixes across three layers (prompting, runtime contracts, and
+      browser execution), and every patch re-runs the suite before merge. The
+      latest run passed 26 of 26 with zero hallucinations, holding reasoning
+      steps within 1.5 times the per-case minimum.
+    </desc>
+
+    <defs>
+      <marker
+        id="he-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M0,0 L10,5 L0,10" class="diagram__arrowhead" />
+      </marker>
+      <marker
+        id="he-arrow-soft"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M0,0 L10,5 L0,10" class="diagram__arrowhead diagram__arrowhead--soft" />
+      </marker>
+    </defs>
+
+    <path
+      d="M44,252 H24 V70 H44"
+      class="diagram__link--soft"
+      fill="none"
+      marker-end="url(#he-arrow-soft)"
+    />
+    <text transform="rotate(-90 14 161)" x="14" y="161" class="diagram__label">regression loop</text>
+
+    <text x="44" y="44" class="diagram__group-title diagram__anchor-start">Eval Suite &#183; 26 cases</text>
+    <rect x="44" y="56" width="103" height="28" rx="4" class="diagram__node" />
+    <text x="95.5" y="74" class="diagram__node-sub">correctness</text>
+    <rect x="161" y="56" width="103" height="28" rx="4" class="diagram__node" />
+    <text x="212.5" y="74" class="diagram__node-sub">faithfulness</text>
+    <rect x="278" y="56" width="103" height="28" rx="4" class="diagram__node" />
+    <text x="329.5" y="74" class="diagram__node-sub">efficiency</text>
+    <rect x="395" y="56" width="103" height="28" rx="4" class="diagram__node" />
+    <text x="446.5" y="74" class="diagram__node-sub">rule adherence</text>
+    <rect x="512" y="56" width="103" height="28" rx="4" class="diagram__node" />
+    <text x="563.5" y="74" class="diagram__node-sub">recovery</text>
+
+    <line x1="329.5" y1="101" x2="329.5" y2="121" class="diagram__link" marker-end="url(#he-arrow)" />
+
+    <text x="44" y="126" class="diagram__group-title diagram__anchor-start">Fixes</text>
+    <rect x="44" y="138" width="181" height="40" rx="5" class="diagram__node" />
+    <text x="134.5" y="154" class="diagram__node-title">Prompting</text>
+    <text x="134.5" y="171" class="diagram__node-sub">read the page &#183; click by label</text>
+    <rect x="239" y="138" width="181" height="40" rx="5" class="diagram__node" />
+    <text x="329.5" y="154" class="diagram__node-title">Runtime contract</text>
+    <text x="329.5" y="171" class="diagram__node-sub">stop sending blank defaults</text>
+    <rect x="434" y="138" width="181" height="40" rx="5" class="diagram__node" />
+    <text x="524.5" y="154" class="diagram__node-title">Browser execution</text>
+    <text x="524.5" y="171" class="diagram__node-sub">clearer commands &#183; faster focus</text>
+
+    <line x1="329.5" y1="195" x2="329.5" y2="215" class="diagram__link" marker-end="url(#he-arrow)" />
+
+    <text x="44" y="220" class="diagram__group-title diagram__anchor-start">Regression Gate</text>
+    <rect x="44" y="232" width="571" height="40" rx="5" class="diagram__node" />
+    <text x="329.5" y="248" class="diagram__node-title">The full suite must pass before merge</text>
+    <text x="329.5" y="265" class="diagram__label diagram__label--strong">26 / 26 &#183; 0 hallucinations &#183; &#8804; 1.5&#215; min steps</text>
+  </svg>
+
+  <figcaption class="diagram-figure__caption">
+    <InlineText text={caption} />
+  </figcaption>
+</figure>
+
+<style>
+  .evaluation-callout {
+    margin-top: var(--space-12);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+  }
+
+  .evaluation-callout + :global(.diagram-figure) {
+    margin-top: var(--space-6);
+  }
+
+  .evaluation-callout__label {
+    margin: 0 0 var(--space-2);
+    font-size: var(--fs-meta);
+    font-weight: var(--fw-medium);
+    color: var(--muted);
+  }
+
+  .evaluation-callout__body {
+    margin: 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--fg);
+    text-wrap: pretty;
+  }
+</style>

@@ -57,13 +57,17 @@ const description =
 
     const applyFilter = (slug: string) => {
       list.dataset.filter = slug;
-      if (slug === "all") return;
       for (const row of workRows) {
-        row.toggleAttribute(
-          "data-category-match",
-          row.dataset.category === slug,
-        );
+        row.removeAttribute("data-last-match");
       }
+      if (slug === "all") return;
+      let lastMatch: HTMLLIElement | null = null;
+      for (const row of workRows) {
+        const match = row.dataset.category === slug;
+        row.toggleAttribute("data-category-match", match);
+        if (match) lastMatch = row;
+      }
+      lastMatch?.setAttribute("data-last-match", "");
     };
 
     const reduceMotion = window.matchMedia(

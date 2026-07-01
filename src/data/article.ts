@@ -56,10 +56,15 @@ export const sections: ArticleSection[] = [
 		id: "hardening-evaluation",
 		title: "Hardening and evaluation",
 		paragraphs: [
-			"Once the browser subagent was running real sessions, traces showed it failing in repeatable ways: clicking empty upvote arrows, timing out on elements addressed by position, declaring success after a login redirect, and inventing placeholder values for fields it could not read. I turned those traces into a 26-case browser suite scored on five axes (correctness, faithfulness, efficiency, rule adherence, and recovery), then ran the affected cases and the full suite as regression gates before every patch.",
+			"Once the browser subagent was running real sessions, traces showed it failing in repeatable ways, from clicking empty upvote arrows to inventing placeholder values for fields it could not read. I turned each failure mode into a scored case in a 26-case browser suite, then ran the affected cases and the full suite as regression gates before every patch.",
 			"The fixes crossed prompting, runtime contracts, and browser execution. Rewriting the subagent's prompt around snapshot-first interaction and visible-text element naming cleared the visible failure modes. A subtler one lived in the Pydantic translation layer between the extension's tool schemas and the agent framework: it was silently injecting empty defaults the model never sent, which broke the extension's Zod validation on every call. Handing the schemas through directly deleted both the layer and the failure mode.",
-			"The last class of fixes was ergonomic. One verb filled text inputs, with a flag switching replace versus append, and the agent kept cycling through fallbacks because it had no clean way to signal intent; splitting it into explicit fill and type verbs removed the ambiguity. Swapping the focus path from three simulated mouse events to a direct focus call cut a fill from 5.20 seconds to 0.04 seconds. The latest full run passed 26 of 26, with a 70-second p95.",
+			"The last class of fixes was ergonomic. One verb filled text inputs, with a flag switching replace versus append, and the agent kept cycling through fallbacks because it had no clean way to signal intent; splitting it into explicit fill and type verbs removed the ambiguity. Swapping the focus path from three simulated mouse events to a direct focus call cut a fill from 5.20 seconds to 0.04 seconds.",
 		],
+		diagram: {
+			kind: "evaluation",
+			caption:
+				"Failures seen in traces become scored cases, and the full suite gates every merge.",
+		},
 	},
 	{
 		id: "frontend-runtime",
@@ -74,8 +79,8 @@ export const sections: ArticleSection[] = [
 		id: "what-this-proved",
 		title: "What this proved",
 		paragraphs: [
-			"RAMEN took an ambiguous agent product from research to an enterprise platform in production, and I owned every layer of it: backend architecture, model integration, streaming protocols, browser security, and interaction design. The decisions I am proudest of were not features but the seams, the ones that let me add middleware, another provider, and a browser subagent without reshaping the API or the frontend's event handling.",
-			"It also sharpened how I debug cross-layer systems. I leaned on traces to separate model mistakes from contract and execution failures, turned those findings into repeatable evals, and measured the paths where performance actually mattered. Owning the full stack is what made it possible to fix the real bottleneck instead of optimising whichever layer was easiest to see.",
+			"RAMEN took an ambiguous agent concept from research to a production enterprise platform. I designed and built it end to end, from backend architecture and model integration to browser runtime and interaction design.",
+			"That full-stack ownership let me ship a browser agent whose agentic capabilities are in the same class as OpenAI Atlas, Perplexity Comet, and Chrome's emerging AI browser features.",
 		],
 	},
 	{

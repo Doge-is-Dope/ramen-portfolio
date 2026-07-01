@@ -16,7 +16,7 @@ export type ArticleFigureProps = {
 };
 
 export type ArticleDiagram = {
-	kind: "system" | "runtime" | "browser-relay";
+	kind: "system" | "runtime" | "browser-relay" | "evaluation";
 	caption: string;
 };
 

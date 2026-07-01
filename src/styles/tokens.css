@@ -36,7 +36,6 @@
 	--tracking-tight: -0.03em;
 	--tracking-snug: -0.01em;
 
-	/* Spacing scale: step suffix counts 0.25rem (4px) units */
 	--space-1: 0.25rem;
 	--space-2: 0.5rem;
 	--space-3: 0.75rem;
@@ -51,12 +50,10 @@
 	--space-16: 4rem;
 	--space-24: 6rem;
 
-	/* Semantic spacing, built on the scale */
 	--space-gutter: var(--space-6);
 	--space-section: 5.5rem;
 	--space-hero-y: clamp(5rem, 3rem + 6vw, 7rem);
 
-	/* Icon / inline-glyph sizes */
 	--icon-xs: 0.75rem;
 	--icon-sm: 0.875rem;
 	--icon-md: 1rem;

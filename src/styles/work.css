@@ -85,6 +85,11 @@
 	border-bottom: 1px solid var(--rule);
 }
 
+.work-row:nth-last-child(2),
+.work-row[data-last-match] {
+	border-bottom: 0;
+}
+
 .work-list[data-filter]:not([data-filter="all"])
 	.work-row:not([data-category-match]) {
 	display: none;
