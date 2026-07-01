@@ -13,11 +13,6 @@ const headlineAfter = headlineRest.join("RAMEN");
 ---
 
 <header class="article-hero">
-  <p class="article-hero__meta">
-    <span>{profile.reviewPeriod}</span>
-    <span aria-hidden="true">&middot;</span>
-    <span>{profile.kicker}</span>
-  </p>
   <h1 class="article-hero__title">
     {
       headlineRest.length > 0 ? (
@@ -42,16 +37,6 @@ const headlineAfter = headlineRest.join("RAMEN");
     margin: 0 auto;
     padding-block: var(--space-hero-y) calc(var(--space-hero-y) * 0.7);
     text-align: center;
-  }
-
-  .article-hero__meta {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin: 0 0 var(--space-8);
-    font-size: var(--fs-meta);
-    font-weight: var(--fw-medium);
-    color: var(--muted);
   }
 
   .article-hero__title {

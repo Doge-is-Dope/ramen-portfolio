@@ -10,10 +10,6 @@ import "@/styles/work.css";
 const title = "RAMEN Selected Work";
 const description =
 	"Selected RAMEN project work by Clement Liang across agent architecture, streaming, browser automation, chat UX, and delivery quality.";
-const sortedWork = [...work].sort((a, b) => {
-	if (a.shippedAt === b.shippedAt) return a.id.localeCompare(b.id);
-	return b.shippedAt.localeCompare(a.shippedAt);
-});
 ---
 
 <BaseLayout title={title} description={description}>
@@ -31,7 +27,7 @@ const sortedWork = [...work].sort((a, b) => {
     <WorkFilterBar />
 
     <ol class="work-list" data-filter="all">
-      {sortedWork.map((entry) => <WorkRow entry={entry} />)}
+      {work.map((entry) => <WorkRow entry={entry} />)}
       <li class="work-list__empty">No entries in this category.</li>
     </ol>
   </main>
@@ -55,25 +51,9 @@ const sortedWork = [...work].sort((a, b) => {
     );
     const filterScroller =
       document.querySelector<HTMLDivElement>(".work-filter");
-    const sortTrigger = document.querySelector<HTMLButtonElement>(
-      "[data-sort-trigger]",
-    );
-    const sortMenu = document.querySelector<HTMLDivElement>(
-      "[data-sort-menu]",
-    );
-    const sortCurrent = document.querySelector<HTMLSpanElement>(
-      "[data-sort-current]",
-    );
-    const sortOptions = sortMenu
-      ? Array.from(
-          sortMenu.querySelectorAll<HTMLElement>("[data-sort-option]"),
-        )
-      : [];
-
     const workRows = Array.from(
       list.querySelectorAll<HTMLLIElement>(".work-row"),
     );
-    const emptyState = list.querySelector<HTMLLIElement>(".work-list__empty");
 
     const applyFilter = (slug: string) => {
       list.dataset.filter = slug;
@@ -84,23 +64,6 @@ const sortedWork = [...work].sort((a, b) => {
           row.dataset.category === slug,
         );
       }
-    };
-
-    const applySort = (direction: "asc" | "desc") => {
-      const sortedRows = [...workRows].sort((a, b) => {
-        const dateA = a.dataset.shippedAt ?? "";
-        const dateB = b.dataset.shippedAt ?? "";
-        const idA = a.dataset.id ?? "";
-        const idB = b.dataset.id ?? "";
-        if (dateA === dateB) return idA.localeCompare(idB);
-        return direction === "desc"
-          ? dateB.localeCompare(dateA)
-          : dateA.localeCompare(dateB);
-      });
-      const fragment = document.createDocumentFragment();
-      for (const row of sortedRows) fragment.appendChild(row);
-      if (emptyState) fragment.appendChild(emptyState);
-      list.appendChild(fragment);
     };
 
     const reduceMotion = window.matchMedia(
@@ -164,130 +127,6 @@ const sortedWork = [...work].sort((a, b) => {
       updateFilterScrollPosition();
     }
 
-    if (sortTrigger && sortMenu && sortCurrent && sortOptions.length) {
-      const openMenu = () => {
-        sortMenu.hidden = false;
-        sortMenu.dataset.state = "open";
-        sortTrigger.setAttribute("aria-expanded", "true");
-        const selected =
-          sortOptions.find(
-            (option) => option.getAttribute("aria-selected") === "true",
-          ) ?? sortOptions[0];
-        selected.focus();
-      };
-
-      const closeMenu = ({ returnFocus = true } = {}) => {
-        if (sortMenu.hidden) return;
-        sortMenu.dataset.state = "closing";
-        sortTrigger.setAttribute("aria-expanded", "false");
-        if (returnFocus) sortTrigger.focus();
-      };
-
-      const selectOption = (option: HTMLElement) => {
-        for (const sortOption of sortOptions) {
-          sortOption.setAttribute(
-            "aria-selected",
-            sortOption === option ? "true" : "false",
-          );
-        }
-        const label = option.querySelector(".work-sort__option-label");
-        if (label) sortCurrent.textContent = label.textContent ?? "";
-        const direction = option.dataset.sortOption === "asc" ? "asc" : "desc";
-        applySort(direction);
-        closeMenu();
-      };
-
-      sortTrigger.addEventListener(
-        "click",
-        () => {
-          if (sortMenu.hidden || sortMenu.dataset.state === "closing") {
-            openMenu();
-          } else {
-            closeMenu();
-          }
-        },
-        { signal },
-      );
-
-      sortTrigger.addEventListener(
-        "keydown",
-        (event) => {
-          if (
-            event.key === "ArrowDown" ||
-            event.key === "ArrowUp" ||
-            event.key === "Enter" ||
-            event.key === " "
-          ) {
-            event.preventDefault();
-            openMenu();
-          }
-        },
-        { signal },
-      );
-
-      for (const option of sortOptions) {
-        option.addEventListener("click", () => selectOption(option), {
-          signal,
-        });
-        option.addEventListener(
-          "keydown",
-          (event) => {
-            const idx = sortOptions.indexOf(option);
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              selectOption(option);
-            } else if (event.key === "ArrowDown") {
-              event.preventDefault();
-              sortOptions[(idx + 1) % sortOptions.length].focus();
-            } else if (event.key === "ArrowUp") {
-              event.preventDefault();
-              sortOptions[
-                (idx - 1 + sortOptions.length) % sortOptions.length
-              ].focus();
-            } else if (event.key === "Home") {
-              event.preventDefault();
-              sortOptions[0].focus();
-            } else if (event.key === "End") {
-              event.preventDefault();
-              sortOptions[sortOptions.length - 1].focus();
-            } else if (event.key === "Escape") {
-              event.preventDefault();
-              closeMenu();
-            } else if (event.key === "Tab") {
-              closeMenu({ returnFocus: false });
-            }
-          },
-          { signal },
-        );
-      }
-
-      sortMenu.addEventListener(
-        "animationend",
-        () => {
-          if (sortMenu.dataset.state === "closing") {
-            sortMenu.hidden = true;
-            sortMenu.dataset.state = "closed";
-          }
-        },
-        { signal },
-      );
-
-      document.addEventListener(
-        "click",
-        (event) => {
-          if (sortMenu.hidden || sortMenu.dataset.state === "closing") return;
-          const target = event.target;
-          if (
-            target instanceof Node &&
-            (sortTrigger.contains(target) || sortMenu.contains(target))
-          ) {
-            return;
-          }
-          closeMenu({ returnFocus: false });
-        },
-        { signal },
-      );
-    }
   }
 
   document.addEventListener("astro:page-load", setupWorkPage);

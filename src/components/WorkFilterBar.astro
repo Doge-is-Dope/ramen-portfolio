@@ -11,11 +11,6 @@ const workCategories: ("All" | WorkCategory)[] = [
 	"Architecture",
 	"Performance",
 ];
-
-const workSortOptions = [
-	{ value: "desc", label: "Newest first" },
-	{ value: "asc", label: "Oldest first" },
-];
 ---
 
 <div class="work-filter-bar">
@@ -41,71 +36,5 @@ const workSortOptions = [
         );
       })
     }
-  </div>
-  <div class="work-sort">
-    <span class="work-sort__label" id="work-sort-label">Sort by</span>
-    <div class="work-sort__widget">
-      <button
-        type="button"
-        class="work-sort__trigger"
-        aria-haspopup="listbox"
-        aria-expanded="false"
-        aria-controls="work-sort-menu"
-        aria-labelledby="work-sort-label work-sort-current"
-        data-sort-trigger
-      >
-        <span id="work-sort-current" data-sort-current>Newest first</span>
-        <svg
-          class="work-sort__chevron"
-          viewBox="0 0 12 12"
-          aria-hidden="true"
-        >
-          <path
-            d="M3 4.5l3 3 3-3"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"></path>
-        </svg>
-      </button>
-      <div
-        id="work-sort-menu"
-        class="work-sort__menu"
-        role="listbox"
-        aria-labelledby="work-sort-label"
-        hidden
-        data-state="closed"
-        data-sort-menu
-      >
-        {
-          workSortOptions.map((option, idx) => (
-            <div
-              class="work-sort__option"
-              role="option"
-              tabindex="-1"
-              aria-selected={idx === 0 ? "true" : "false"}
-              data-sort-option={option.value}
-            >
-              <span class="work-sort__option-label">{option.label}</span>
-              <svg
-                class="work-sort__check"
-                viewBox="0 0 14 14"
-                aria-hidden="true"
-              >
-                <path
-                  d="M3 7.5l3 3 5-6"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          ))
-        }
-      </div>
-    </div>
   </div>
 </div>

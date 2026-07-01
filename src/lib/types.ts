@@ -1,8 +1,6 @@
 export type Profile = {
 	name: string;
 	role: string;
-	reviewPeriod: string;
-	kicker: string;
 	headline: string;
 	dek: string;
 	linkedin: string;
@@ -69,14 +67,10 @@ export type WorkCategory =
 
 export type WorkSurface = "Backend" | "Frontend";
 
-export type YearMonth = `${number}-${number}`;
-
 export type WorkEntry = {
 	id: string;
 	title: string;
 	summary: string;
 	category: WorkCategory;
 	surface: WorkSurface;
-	shippedAt: YearMonth;
-	updatedAt?: YearMonth;
 };
