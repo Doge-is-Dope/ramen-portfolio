@@ -4,7 +4,7 @@ export const profile: Profile = {
 	name: "Clement Liang",
 	role: "Software Engineer",
 	headline: "Building RAMEN",
-	dek: "From product plan to production.",
+	dek: "Built from scratch. Shipped to production.",
 	linkedin: "https://www.linkedin.com/in/chunchiehliang",
 	github: "https://github.com/Doge-is-Dope",
 };

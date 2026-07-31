@@ -1,12 +1,6 @@
 ---
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import { withBase } from "@/lib/url";
-
-type Props = {
-	activePage?: "caseStudy" | "selectedWork";
-};
-
-const { activePage } = Astro.props;
 ---
 
 <header class="top-bar">
@@ -17,23 +11,12 @@ const { activePage } = Astro.props;
     <div></div>
   </div>
   <div class="top-bar__inner">
-    <span class="top-bar__name wordmark-shimmer" data-text="RAMEN">RAMEN</span>
-    <nav class="top-bar__nav" aria-label="Primary">
-      <a
-        href={withBase("/")}
-        aria-current={activePage === "caseStudy" ? "page" : undefined}
-        class="top-bar__link"
-      >
-        Case Study
-      </a>
-      <a
-        href={withBase("/work/")}
-        aria-current={activePage === "selectedWork" ? "page" : undefined}
-        class="top-bar__link"
-      >
-        Selected Work
-      </a>
-    </nav>
+    <a
+      class="top-bar__name wordmark-shimmer"
+      href={withBase("/")}
+      data-text="RAMEN"
+      aria-label="RAMEN home"
+    >RAMEN</a>
     <ThemeToggle />
   </div>
 </header>
@@ -121,30 +104,10 @@ const { activePage } = Astro.props;
     text-decoration: none;
   }
 
-  .top-bar__nav {
-    display: flex;
-    gap: var(--space-1);
-  }
-
-  .top-bar__link {
-    color: var(--muted);
-    text-decoration: none;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-pill);
-    transition: color 120ms ease;
-  }
-
-  .top-bar__link:hover {
-    color: var(--fg);
-  }
-
-  .top-bar__link:focus-visible {
+  .top-bar__name:focus-visible {
     outline: 2px solid var(--fg);
     outline-offset: 2px;
-  }
-
-  .top-bar__link[aria-current="page"] {
-    color: var(--fg);
+    border-radius: var(--radius-xs);
   }
 
   @media (max-width: 640px), (hover: none) and (pointer: coarse) {
@@ -161,19 +124,10 @@ const { activePage } = Astro.props;
 
   @media (max-width: 640px) {
     .top-bar__inner {
-      gap: var(--space-3);
       padding-inline: var(--space-4);
     }
 
-    .top-bar__nav {
-      min-width: 0;
-      flex: 1 1 auto;
-      justify-content: center;
-      gap: var(--space-1);
-    }
-
-    .top-bar__name,
-    .top-bar__link {
+    .top-bar__name {
       white-space: nowrap;
     }
   }
@@ -232,7 +186,7 @@ const { activePage } = Astro.props;
 
     bar.addEventListener("click", (event) => {
       const link = (event.target as HTMLElement).closest<HTMLAnchorElement>(
-        ".top-bar__link",
+        ".top-bar__name",
       );
       if (!link) return;
 

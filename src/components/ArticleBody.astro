@@ -49,6 +49,14 @@ const diagramComponents = {
       );
     })
   }
+  <aside class="article-name-callout" aria-labelledby="ramen-name-label">
+    <p id="ramen-name-label" class="article-name-callout__label">Why RAMEN?</p>
+    <p class="article-name-callout__body">
+      <InlineText
+        text="**R**eason. **A**ct. **M**onitor. **E**volve. **N**avigate. The name describes the loop RAMEN follows on every task."
+      />
+    </p>
+  </aside>
 </div>
 
 <style>
@@ -83,5 +91,27 @@ const diagramComponents = {
     margin-bottom: var(--space-2);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
+  }
+
+  .article-name-callout {
+    margin-top: var(--space-12);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+  }
+
+  .article-name-callout__label {
+    margin: 0 0 var(--space-2);
+    font-size: var(--fs-meta);
+    font-weight: var(--fw-medium);
+    color: var(--muted);
+  }
+
+  .article-name-callout__body {
+    margin: 0;
+    font-size: var(--fs-caption);
+    line-height: var(--lh-body);
+    color: var(--fg);
+    text-wrap: pretty;
   }
 </style>
