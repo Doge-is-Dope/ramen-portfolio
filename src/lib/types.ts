@@ -16,7 +16,7 @@ export type ArticleFigureProps = {
 };
 
 export type ArticleDiagram = {
-	kind: "system" | "runtime" | "browser-relay" | "evaluation";
+	kind: "system" | "backend" | "runtime" | "browser-relay" | "evaluation";
 	caption: string;
 };
 
@@ -24,6 +24,7 @@ export type ArticleSection = {
 	id: string;
 	title: string;
 	paragraphs: string[];
+	details?: string[];
 	items?: string[];
 	figure?: ArticleFigureProps;
 	diagram?: ArticleDiagram;

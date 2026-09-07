@@ -1,5 +1,6 @@
 ---
 import ArticleFigure from "@/components/ArticleFigure.astro";
+import BackendDiagram from "@/components/diagrams/BackendDiagram.astro";
 import BrowserRelayDiagram from "@/components/diagrams/BrowserRelayDiagram.astro";
 import EvaluationDiagram from "@/components/diagrams/EvaluationDiagram.astro";
 import RuntimeDiagram from "@/components/diagrams/RuntimeDiagram.astro";
@@ -15,6 +16,7 @@ const { sections } = Astro.props;
 
 const diagramComponents = {
 	system: SystemDiagram,
+	backend: BackendDiagram,
 	runtime: RuntimeDiagram,
 	"browser-relay": BrowserRelayDiagram,
 	evaluation: EvaluationDiagram,
@@ -45,6 +47,11 @@ const diagramComponents = {
           ) : null}
           {section.figure ? <ArticleFigure {...section.figure} /> : null}
           {diagram && Diagram ? <Diagram caption={diagram.caption} /> : null}
+          {section.details?.map((paragraph) => (
+            <p class="article-section__paragraph">
+              <InlineText text={paragraph} />
+            </p>
+          ))}
         </section>
       );
     })
@@ -53,7 +60,7 @@ const diagramComponents = {
     <p id="ramen-name-label" class="article-name-callout__label">Why RAMEN?</p>
     <p class="article-name-callout__body">
       <InlineText
-        text="**R**eason. **A**ct. **M**onitor. **E**volve. **N**avigate. The name describes the loop RAMEN follows on every task."
+        text="**R**eason. **A**ct. **M**onitor. **E**volve. **N**avigate."
       />
     </p>
   </aside>

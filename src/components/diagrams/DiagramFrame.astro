@@ -1,0 +1,16 @@
+---
+import InlineText from "@/components/InlineText.astro";
+
+type Props = { caption: string; label: string };
+const { caption, label } = Astro.props;
+---
+
+<figure class="diagram-figure">
+  <p class="diagram-scroll-hint">Scroll horizontally to follow the full diagram →</p>
+  <div class="diagram-scroll" role="region" aria-label={label} tabindex="0">
+    <slot />
+  </div>
+  <figcaption class="diagram-figure__caption">
+    <InlineText text={caption} />
+  </figcaption>
+</figure>
