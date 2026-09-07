@@ -68,9 +68,33 @@ const diagramComponents = {
 
 <style>
   .article-body {
-    max-width: var(--measure-body);
+    --measure-body: 42.5rem;
+    --measure-diagram: 56rem;
+    max-width: var(--measure-diagram);
     margin: 0 auto;
     padding-bottom: var(--space-24);
+  }
+
+  .article-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .article-section > :global(*) {
+    min-width: 0;
+    width: 100%;
+    max-width: var(--measure-body);
+    justify-self: center;
+  }
+
+  .article-section > :global(.diagram-figure) {
+    max-width: var(--measure-diagram);
+  }
+
+  @media (min-width: 56rem) {
+    .article-body {
+      width: calc(100% - 8rem);
+    }
   }
 
   .article-section + .article-section {
@@ -101,6 +125,8 @@ const diagramComponents = {
   }
 
   .article-name-callout {
+    max-width: var(--measure-body);
+    margin-inline: auto;
     margin-top: var(--space-12);
     padding: var(--space-4) var(--space-5);
     border: 1px solid var(--rule);

@@ -89,12 +89,9 @@ code {
 }
 
 .diagram-figure {
-	width: min(704px, calc(100vw - 2 * var(--space-gutter)));
+	width: 100%;
 	margin-block: var(--space-8);
-	margin-inline: calc(
-		(100% - min(704px, calc(100vw - 2 * var(--space-gutter)))) /
-		2
-	);
+	margin-inline: 0;
 	min-width: 0;
 }
 .diagram-scroll {
@@ -110,7 +107,7 @@ code {
 }
 .diagram {
 	display: block;
-	width: 640px;
+	width: 100%;
 	min-width: 640px;
 	height: auto;
 	margin-inline: auto;
@@ -124,7 +121,7 @@ code {
 	--d-boundary: #626974;
 }
 .diagram-figure__caption {
-	max-width: 640px;
+	max-width: var(--measure-body);
 	margin: var(--space-4) auto 0;
 	text-align: center;
 	text-wrap: balance;
@@ -146,13 +143,13 @@ code {
 .diagram__group-title,
 .diagram__node-title {
 	fill: var(--fg);
-	font-size: 16px;
+	font-size: min(16px, calc(var(--fs-body) * var(--diagram-text-scale, 1)));
 	font-weight: var(--fw-medium);
 }
 .diagram__node-sub,
 .diagram__label {
 	fill: var(--muted);
-	font-size: 13px;
+	font-size: min(13px, calc(var(--fs-body) * var(--diagram-text-scale, 1)));
 }
 .diagram__link {
 	stroke: var(--fg);
@@ -301,19 +298,13 @@ code {
 }
 
 .diagram-scroll-hint {
-	display: none;
 	margin: 0 0 var(--space-2);
 	color: var(--muted);
 	font-size: var(--fs-caption);
 }
-@media (max-width: 713px) {
-	.diagram-scroll-hint {
-		display: block;
-	}
-}
 
 .diagram--sequence .diagram__node-title {
-	font-size: 14px;
+	font-size: min(14px, calc(var(--fs-body) * var(--diagram-text-scale, 1)));
 }
 .diagram__lifeline {
 	fill: none;

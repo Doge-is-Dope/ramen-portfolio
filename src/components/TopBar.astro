@@ -1,6 +1,10 @@
 ---
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import { withBase } from "@/lib/url";
+
+const workUrl = withBase("/work/");
+const isWorkPage =
+	Astro.url.pathname.replace(/\/$/, "") === workUrl.replace(/\/$/, "");
 ---
 
 <header class="top-bar">
@@ -17,7 +21,10 @@ import { withBase } from "@/lib/url";
       data-text="RAMEN"
       aria-label="RAMEN home"
     >RAMEN</a>
-    <ThemeToggle />
+    <nav class="top-bar__actions" aria-label="Main navigation">
+      <a class="top-bar__work" href={workUrl} aria-current={isWorkPage ? "page" : undefined}>Work</a>
+      <ThemeToggle />
+    </nav>
   </div>
 </header>
 
@@ -91,7 +98,7 @@ import { withBase } from "@/lib/url";
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: var(--measure-shell);
+    max-width: var(--measure-navigation);
     margin: 0 auto;
     padding: var(--space-4) var(--space-gutter);
     font-size: var(--fs-meta);
@@ -107,6 +114,31 @@ import { withBase } from "@/lib/url";
   .top-bar__name:focus-visible {
     outline: 2px solid var(--fg);
     outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  .top-bar__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
+  .top-bar__work {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .top-bar__work:hover,
+  .top-bar__work[aria-current="page"] {
+    color: var(--fg);
+  }
+
+  .top-bar__work:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 4px;
     border-radius: var(--radius-xs);
   }
 

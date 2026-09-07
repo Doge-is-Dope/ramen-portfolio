@@ -3,340 +3,337 @@ import type { WorkEntry } from "@/lib/types";
 export const work: WorkEntry[] = [
 	{
 		id: "layered-backend",
-		title: "Layered backend: domain, application, infrastructure, presentation",
+		title: "A layered backend that can grow with the product",
 		summary:
-			"Framework-free dataclass entities and repository protocols in the domain, use cases in the application layer, entity-to-document mappers isolating Mongo, and thin presentation routers, all wired through one AppContainer. The split paid off when middleware, subagents, and providers slotted into existing seams without rewriting the API.",
+			"Separated domain models, application use cases, infrastructure, and API routes, with dependencies wired through AppContainer. This gave middleware, subagents, and new providers a clear place to fit as the product grew.",
 		category: "Architecture",
 		surface: "Backend",
 	},
 	{
 		id: "appcontainer-di",
-		title: "Centralised dependency-injection container",
+		title: "One place to manage backend dependencies",
 		summary:
-			"AppContainer manages tool registry, LLM factory, agent service, and session services with lazy initialization. Replaced module-level singletons so tests no longer have to monkey-patch globals.",
+			"Replaced module-level singletons with AppContainer, which creates tools, models, and services when they are needed. Tests can now supply their own dependencies without patching global state.",
 		category: "Architecture",
 		surface: "Backend",
 	},
 	{
 		id: "per-user-multi-provider-keys",
-		title: "Per-user, multi-provider API keys",
+		title: "API keys scoped to each user and provider",
 		summary:
-			"Request-scoped resolution of user credentials behind a provider-neutral factory, with per-provider model validation. Each agent run uses the right user's keys without any global config.",
+			"Each request resolves the user’s credentials and validates the selected model through a shared provider interface. Agent runs use that user’s keys without relying on global configuration.",
 		category: "Architecture",
 		surface: "Backend",
 	},
 	{
 		id: "atomic-conversation-ownership",
-		title: "Atomic conversation ownership across every read and write",
+		title: "Ownership checks built into conversation queries",
 		summary:
-			"Ownership filter pushed into the query, not layered on after, so a missing scope can't leak data. Safe-delete ordering and request-scoped checks fell out of the same pass.",
+			"Added ownership filters directly to every conversation read and write, so access is checked as part of the database operation. The same work covered deletion order and request-level checks.",
 		category: "Architecture",
 		surface: "Backend",
 	},
 	{
 		id: "llm-profile-dto",
-		title: "Typed LLMProfile DTO replacing untyped profile dicts",
+		title: "Typed model profiles at the agent boundary",
 		summary:
-			"Pydantic model for external GraphQL profile data with camelCase aliasing, provider extraction, and reasoning-effort validation. Removed `dict[str, Any]` from the agent boundary.",
+			"Replaced untyped profile dictionaries with a Pydantic model for incoming GraphQL data. It handles field aliases, extracts the provider, and validates reasoning effort before the profile reaches the agent.",
 		category: "Architecture",
 		surface: "Backend",
 	},
 	{
 		id: "fulltext-conversation-search",
-		title: "Conversation search via Mongo $text indexes",
+		title: "Search across conversation titles and messages",
 		summary:
-			"Search by title and message content with cursor pagination. Orchestration lives in a use case, not the repository, so the query path stays under domain control.",
+			"Added full-text search with Mongo indexes and cursor pagination. An application use case coordinates the search, keeping that logic separate from database access.",
 		category: "Architecture",
 		surface: "Backend",
 	},
 	{
 		id: "langgraph-middleware-stack",
-		title: "LangGraph middleware stack on top of LangChain",
+		title: "An agent loop built from composable middleware",
 		summary:
-			"Composable layers (DynamicToolChoice, ToolMonitor, SubAgent, prompt context) instead of subclassing the agent. Each middleware is independently testable and addable.",
+			"Added tool selection, tool monitoring, subagents, and prompt context as separate middleware layers. Each layer can be added and tested independently as the agent’s behavior evolves.",
 		category: "Agent loop",
 		surface: "Backend",
 	},
 	{
 		id: "dynamic-tool-choice",
-		title: "DynamicToolChoiceMiddleware mutating state at bind time",
+		title: "Tool selection that can change between turns",
 		summary:
-			"Forces a specific tool when the product needs it, by mutating LangGraph's `tool_choice` between turns. LangChain's built-in selector solves a different problem (filtering visible tools), so I wrote this layer.",
+			"Built middleware that updates LangGraph’s `tool_choice` when a flow requires a specific tool. This gives the application control over which tool runs next, beyond choosing which tools are available.",
 		category: "Agent loop",
 		surface: "Backend",
 	},
 	{
 		id: "subagent-middleware",
-		title: "SubAgentMiddleware for delegated execution",
+		title: "Subagents that share the parent’s tools and event format",
 		summary:
-			"Ephemeral subagents share the parent's tool registry and streaming protocol, so the frontend only needs to know about one event shape. Lazy init keeps the cold path quiet.",
+			"Added short-lived subagents that use the parent’s tool registry and streaming protocol. The frontend handles a shared event format, and subagents are initialized only when needed.",
 		category: "Agent loop",
 		surface: "Backend",
 	},
 	{
 		id: "llm-instance-cache",
-		title: "Per-(provider, model) LLM instance cache with TTL",
+		title: "Reusing model instances across turns",
 		summary:
-			"Avoids reconnecting to the upstream provider on every turn, which was the dominant tail-latency source under streaming load.",
+			"Cached LLM instances by provider and model, with a time-to-live. Reusing them avoids reconnecting on every turn and addresses the main source of tail latency observed under streaming load.",
 		category: "Agent loop",
 		surface: "Backend",
 	},
 	{
 		id: "subagent-event-isolation",
-		title: "Subagent event isolation in the parent stream",
+		title: "Keeping subagent activity distinct in the stream",
 		summary:
-			"Distinct `SubagentStart`, `SubagentTextDelta`, and `SubagentToolCallStart` events let the frontend show delegated work without conflating it with the parent turn's tokens.",
+			"Added dedicated events for subagent starts, text updates, and tool calls. The frontend can show delegated work separately while it arrives through the parent’s stream.",
 		category: "Agent loop",
 		surface: "Backend",
 	},
 	{
 		id: "framework-agnostic-sse",
-		title: "Framework-agnostic SSE event shape",
+		title: "A shared event format for streaming responses",
 		summary:
-			"Text deltas, tool calls, tool results, token usage, finish reason, and disconnect signals. Designed against the contract, not the LangChain emitter, so the frontend code is portable across providers.",
+			"Defined an SSE contract for text, tool calls and results, token usage, completion, and disconnects. The frontend consumes application events without depending on LangChain’s internal event format.",
 		category: "Streaming",
 		surface: "Backend",
 	},
 	{
 		id: "three-layer-abort",
-		title: "Three-layer abort: stop button, server, provider",
+		title: "Connecting the stop button to server cancellation",
 		summary:
-			"User cancellation, request scope, and upstream provider abort wired together. OpenAI streaming cancellation isn't actually feasible through LangChain's adapter, so I documented that and made sure partial responses still persist.",
+			"Connected user cancellation to the request lifecycle and provider abort handling. Where the OpenAI streaming adapter in LangChain could not cancel upstream work, I documented the limitation and preserved partial responses.",
 		category: "Streaming",
 		surface: "Backend",
 	},
 	{
 		id: "checkpointer-resume",
-		title: "Resume-from-partial after abort with a LangGraph checkpointer",
+		title: "Picking up a conversation after a stopped response",
 		summary:
-			"Mongo-backed checkpoint saver scoped by `conversation_id`. After an abort, the next turn starts from the last persisted message, not from a fresh transcript.",
+			"Added Mongo-backed LangGraph checkpoints scoped to each conversation. After a response is stopped, the next turn resumes from the last saved message.",
 		category: "Streaming",
 		surface: "Backend",
 	},
 	{
 		id: "chat-event-serializer",
-		title:
-			"Event translation and SSE serialization split from the stream service",
+		title: "Separating event translation from stream delivery",
 		summary:
-			"An EventTranslator normalizes LangGraph events into framework-agnostic app events, and the SSE build functions own block-index correlation and framing. The stream service is now a thin transport that doesn't know about content blocks.",
+			"Moved LangGraph event translation and SSE formatting out of the stream service. Dedicated functions now handle content-block indexing and framing, leaving the service focused on delivering events.",
 		category: "Streaming",
 		surface: "Backend",
 	},
 	{
 		id: "ws-ticket-handshake",
-		title: "WebSocket relay with one-time Redis ticket handshake",
+		title: "One-time tickets for the browser relay",
 		summary:
-			"Origin-bound, hashed-key tickets with 60s TTL and atomic consume. Replaced JWT-in-query-param auth, which would have leaked tokens through extension logs.",
+			"Replaced JWTs in WebSocket URLs with origin-bound Redis tickets that expire after 60 seconds and can be used only once. Ticket keys are hashed, and authentication no longer puts JWTs in URLs that could appear in extension logs.",
 		category: "Browser automation",
 		surface: "Backend",
 	},
 	{
 		id: "browser-proxy-schema",
-		title: "Browser proxy tool with dynamic schema-to-LangChain conversion",
+		title: "Turning browser tool schemas into agent tools",
 		summary:
-			"Converts JSON schemas from the extension into StructuredTools at session start. Depth, property-count, and enum-cardinality guards keep a hostile schema from blowing up the agent.",
+			"Converted the extension’s JSON schemas into LangChain StructuredTools at session start. Limits on nesting, property counts, and enum sizes protect the conversion from oversized or hostile schemas.",
 		category: "Browser automation",
 		surface: "Backend",
 	},
 	{
 		id: "live-tool-updates",
-		title: "Live tool updates over the open WebSocket",
+		title: "Updating browser tools as the tab changes",
 		summary:
-			"An `update_tools` message rebinds the agent's available tools mid-session when the controlled tab changes. Avoided tearing down and reissuing tickets on every navigation.",
+			"Added an `update_tools` message so the agent’s available tools can change during a session. Navigation can refresh the tool set over the existing WebSocket connection without another ticket exchange.",
 		category: "Browser automation",
 		surface: "Backend",
 	},
 	{
 		id: "browser-subagent-prompt-hardening",
-		title: "Snapshot-first browser subagent prompt with raised step budget",
+		title: "Grounding browser actions in a fresh page snapshot",
 		summary:
-			"Subagent now requires a fresh page snapshot before any interaction, addresses elements by visible text rather than row position, and verifies the post-navigation URL before claiming success. Per-spec step budget raised from 25 to 50 so multi-step form flows finish without hitting the cap.",
+			"Updated the browser subagent’s instructions to require a fresh snapshot before interacting, locate elements by visible text, and verify the URL after navigation. Raised the per-spec step limit from 25 to 50 to give longer form flows room to finish.",
 		category: "Browser automation",
 		surface: "Backend",
 	},
 	{
 		id: "browser-subagent-eval",
-		title: "Eval suite for the browser subagent",
+		title: "An evaluation suite for browser tasks",
 		summary:
-			'26 browser tasks scored on five axes: correctness, faithfulness, efficiency, rule adherence, and recovery. Turns a vague "it broke" report into a specific failing case and gates every patch before it ships.',
+			"Built a suite of 26 browser tasks scored on correctness, faithfulness, efficiency, rule adherence, and recovery. It provides specific cases to investigate when something breaks and a check for each patch before release.",
 		category: "Browser automation",
 		surface: "Backend",
 	},
 	{
 		id: "feature-folder-spa",
-		title: "Feature-folder SPA layout with module runtime facades",
+		title: "A consistent home for each frontend feature",
 		summary:
-			"Each feature owns its module/, components/, hooks/, lib/, and __tests__/. A small create-feature script enforces the shape so new features always look the same.",
+			"Organized each feature around its own module, components, hooks, utilities, and tests, with a facade for runtime access. A small scaffolding script gives new features the same starting structure.",
 		category: "Architecture",
 		surface: "Frontend",
 	},
 	{
 		id: "feature-toggles",
-		title: "Environment-aware feature toggle system",
+		title: "Feature controls in one shared registry",
 		summary:
-			"Local-only flags (tool debug, SSE inspector) and always-on flags (suggestions, agent config) in one registry. Persists to localStorage; a settings tab exposes them with friendly names.",
+			"Brought local debugging tools and always-on product features into one environment-aware registry. Settings are saved in localStorage and exposed with readable names in a settings tab.",
 		category: "Architecture",
 		surface: "Frontend",
 	},
 	{
 		id: "tenant-user-api-client",
-		title: "Tenant- and user-aware API client",
+		title: "A shared API client with user and tenant context",
 		summary:
-			"Axios instance with `X-Tenant-ID`/`X-User-ID` headers, EAB-extension token fetch, and 401 retry. The rest of the app talks to one client, not five.",
+			"Centralized tenant and user headers, extension token retrieval, and retries after a 401 response in one Axios client. Features use that client without repeating authentication and request setup.",
 		category: "Architecture",
 		surface: "Frontend",
 	},
 	{
 		id: "ws-tool-registry",
-		title: "Pluggable WebSocket client tool registry",
+		title: "A shared registry for browser tools",
 		summary:
-			"Modules register and unregister tools at runtime through a `(name, definition, implementation)` signature. CDP tools, tab access, and content capture all live behind the same interface.",
+			"Created a common interface for modules to register and unregister tools at runtime. CDP actions, tab access, and content capture each provide a name, definition, and implementation through the same registry.",
 		category: "Architecture",
 		surface: "Frontend",
 	},
 	{
 		id: "create-feature-cli",
-		title: "Interactive create-feature scaffolder script",
+		title: "A script to scaffold new frontend features",
 		summary:
-			"Bun script generates a new feature module's directory shape, adds it to the toggle registry, and validates kebab-case naming. Stops new features from drifting in shape.",
+			"Built an interactive Bun script that creates a feature’s folders, adds it to the toggle registry, and checks its kebab-case name. It keeps routine setup consistent as new features are added.",
 		category: "Architecture",
 		surface: "Frontend",
 	},
 	{
 		id: "composer",
-		title: "Composer with mention pills, slash menu, and attachment chips",
+		title: "A chat composer for messages, mentions, and attachments",
 		summary:
-			"Multi-line input with Cmd+Enter to send, Shift+Enter for newline, queued sends while a turn is in flight, and a stop control wired to the abort protocol. The composer is where most of the chat polish lives.",
+			"Built a multiline composer with mention pills, a slash menu, and attachment chips. It supports keyboard shortcuts, queues messages during an active turn, and connects the stop button to response cancellation.",
 		category: "Chat UI",
 		surface: "Frontend",
 	},
 	{
 		id: "atomic-mention-pills",
-		title: "Atomic @-mention pills with tab metadata",
+		title: "Tab mentions that behave as editable tokens",
 		summary:
-			"Contenteditable tokens with favicon, title, and URL. Caret-aware deletion, drag-select, and keyboard support. Feels like a real tag input, not a regex on a textarea.",
+			"Built contenteditable mention pills that carry a tab’s favicon, title, and URL. Caret-aware deletion, drag selection, and keyboard support let users edit them naturally within a message.",
 		category: "Chat UI",
 		surface: "Frontend",
 	},
 	{
 		id: "tool-indicator",
-		title: "Tool indicator with running shimmer and parallel-tool view",
+		title: "Showing tool activity as it happens",
 		summary:
-			"Collapsible per-tool panel with a shimmer running state, a special web-search affordance, and a consolidated row when several tools fire in parallel. Replaced an early one-line spinner.",
+			"Replaced a one-line spinner with collapsible tool panels, an animated running state, and a dedicated web-search display. When several tools run in parallel, a combined row keeps their activity easy to follow.",
 		category: "Chat UI",
 		surface: "Frontend",
 	},
 	{
 		id: "streamdown-render",
-		title: "Streamdown render with syntax-highlighted code",
+		title: "Markdown and code rendering during streaming",
 		summary:
-			"Replaced vanilla markdown with Streamdown plus the code plugin. Streaming-aware, doesn't reflow on every token, and code blocks finally look right under heavy delta load.",
+			"Integrated Streamdown and its code plugin to render incoming responses with syntax-highlighted code blocks. This reduced reflow as tokens arrived and kept code readable during longer streams.",
 		category: "Chat UI",
 		surface: "Frontend",
 	},
 	{
 		id: "command-palette",
-		title: "Command palette with conversation search",
+		title: "A command palette for chat, settings, and search",
 		summary:
-			"Cmd+K (and Cmd+Shift+O) opens three modes: new chat, settings, and search. Relative date labels, request deduplication so stale results don't overwrite fresh ones.",
+			"Added keyboard access through Cmd+K and Cmd+Shift+O, with modes for starting a chat, opening settings, and searching conversations. Results include relative dates, and request handling prevents older results from replacing newer ones.",
 		category: "Chat UI",
 		surface: "Frontend",
 	},
 	{
 		id: "infinite-sidebar",
-		title: "Sidebar with infinite-scroll cursor pagination",
+		title: "A conversation sidebar with incremental loading",
 		summary:
-			"Date-grouped conversation list, rename and delete inline, optimistic updates, loading skeletons. Built on shadcn primitives so it matches the rest of the chrome.",
+			"Built a date-grouped conversation list with cursor pagination, inline rename and delete, optimistic updates, and loading placeholders. Shared shadcn components keep it consistent with the rest of the interface.",
 		category: "Chat UI",
 		surface: "Frontend",
 	},
 	{
 		id: "raf-stream-coalescer",
-		title:
-			"Stream coalescer with short-interval batching and smooth text reveal",
+		title: "Smoother text updates during busy streams",
 		summary:
-			"Buffers keystroke-rate deltas and flushes them on a short interval to stabilise the order of multi-tool turns; a separate animation-frame loop reveals streamed text smoothly. Keeps the chat responsive under streaming load.",
+			"Batched incoming events at short intervals to keep multi-tool turns in order, then used a separate animation-frame loop to reveal text smoothly. This keeps chat responsive while responses and tool activity arrive together.",
 		category: "Streaming",
 		surface: "Frontend",
 	},
 	{
 		id: "frontend-three-layer-abort",
-		title: "Three-layer abort wired through the conversation store",
+		title: "A shared cancellation path for active responses",
 		summary:
-			"abortKey-keyed registry with AbortError handled gracefully. The stop button, route changes, and reload all converge on the same path so partial responses don't get orphaned.",
+			"Added an abort registry to the conversation store and handled cancellation errors explicitly. The stop button, navigation, and reload use the same cleanup path to preserve partial responses.",
 		category: "Streaming",
 		surface: "Frontend",
 	},
 	{
 		id: "stream-processor",
-		title: "Stream processor with partial-JSON tool input",
+		title: "Processing tool inputs and results as they arrive",
 		summary:
-			"Extracted from the conversation store. Accumulates partial JSON for tool inputs, embeds tool results into the right block, and tracks subagent state alongside the parent turn.",
+			"Extracted stream processing from the conversation store. It assembles partial JSON tool inputs, places results in the correct content block, and tracks subagent activity alongside the parent turn.",
 		category: "Streaming",
 		surface: "Frontend",
 	},
 	{
 		id: "cdp-session-manager",
-		title: "CDP session manager with target resolution and idle release",
+		title: "Managing browser sessions from connection to cleanup",
 		summary:
-			"Single CDP session per browser, resolves target tab (current vs. new), runs tool calls, and releases on 60s idle. Show/hide overlay and screenshot/snapshot caches hang off the session lifecycle.",
+			"Built a manager that maintains one CDP session per browser, selects the current or a new target tab, and releases the session after 60 seconds of inactivity. Overlays and screenshot and snapshot caches follow the same session lifecycle.",
 		category: "Browser automation",
 		surface: "Frontend",
 	},
 	{
 		id: "webgl-overlay-shader",
-		title: "WebGL shader for the controlled-tab overlay",
+		title: "A clearer visual cue for the controlled tab",
 		summary:
-			"Replaced a CSS glowing frame that felt too quiet next to the rest of the UI. Custom vertex and fragment shaders, 60fps RAF loop, debounced fade-out after the last tool call.",
+			"Replaced the CSS frame with a WebGL overlay to make browser activity more visible. Custom shaders run on a 60fps animation loop, with a debounced fade-out after the last tool call.",
 		category: "Browser automation",
 		surface: "Frontend",
 	},
 	{
 		id: "cdp-tool-suite",
-		title: "CDP tool suite with narrowed schemas",
+		title: "Browser actions with validated inputs",
 		summary:
-			"Click, type, navigate, wait_for_selector, snapshot, and ~40 more, all schema-validated client-side before dispatch. Actionability checks live next to tool execution.",
+			"Built tools for clicking, typing, navigation, selector waits, snapshots, and around 40 other actions. Inputs are checked against their schemas before dispatch, with actionability checks alongside execution.",
 		category: "Browser automation",
 		surface: "Frontend",
 	},
 	{
 		id: "ephemeral-tab-context",
-		title: "Selected-tab ephemeral context attached to messages",
+		title: "Tab context scoped to each message",
 		summary:
-			"Current tabs feed into a per-message context field and clear after send. Stops yesterday's selection from quietly riding along on tomorrow's question.",
+			"Attached selected tabs to a per-message context field and cleared the selection after sending. Each message carries the tabs chosen for it, without silently reusing an earlier selection.",
 		category: "Browser automation",
 		surface: "Frontend",
 	},
 	{
 		id: "cdp-fill-verb-split",
-		title:
-			"CDP fill and type split into separate verbs with a direct focus path",
+		title: "Separate fill and type actions for browser forms",
 		summary:
-			"Replace versus append used to be a flag on a single verb, leaving the agent cycling through fallbacks. Splitting them deleted the ambiguity. Swapped the field-focus path from three simulated mouse events to a direct focus call: a fill dropped from 5.20s to 0.04s.",
+			"Split replacing a field’s value and appending text into separate tools, removing a flag that had led the agent through repeated fallbacks. Replacing three simulated mouse events with a direct focus call also reduced a measured fill operation from 5.20s to 0.04s.",
 		category: "Browser automation",
 		surface: "Frontend",
 	},
 	{
 		id: "react-compiler-vendor-chunks",
-		title: "React Compiler with vendor chunk splitting",
+		title: "React Compiler and smaller vendor bundles",
 		summary:
-			"Auto-memoisation in production builds and a Vite chunking pass that keeps the streaming hot path off the cold path. Smaller, cache-friendlier bundles.",
+			"Enabled React Compiler for automatic memoization in production and split vendor code into Vite chunks. This separates frequently used streaming code from less-used code and produces smaller, more cache-friendly bundles.",
 		category: "Performance",
 		surface: "Frontend",
 	},
 	{
 		id: "streamdown-memo",
-		title: "Streamdown isAnimating prop for mid-stream memoisation",
+		title: "Reducing re-renders while a response streams",
 		summary:
-			"Tells Streamdown to short-circuit re-renders mid-token-stream and only do a final pass when the turn finishes. Removed the worst of the message-list jank.",
+			"Used Streamdown’s `isAnimating` prop to skip unnecessary rendering work during streaming and run a final pass when the response finishes. This reduced stuttering in the message list.",
 		category: "Performance",
 		surface: "Frontend",
 	},
 	{
 		id: "background-stream-persistence",
-		title: "Background stream persistence with local cache",
+		title: "Keeping responses running between conversations",
 		summary:
-			"A run keeps accumulating in a background-streams map when the user switches to another conversation, and re-attaches when they come back. Closes the loop where a long browser-tool turn used to look stuck.",
+			"Kept active responses in a background stream map when the user switches conversations, then reattached them on return. Long browser-tool runs continue collecting updates while the user is elsewhere in the app.",
 		category: "Performance",
 		surface: "Frontend",
 	},
