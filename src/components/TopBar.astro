@@ -173,10 +173,13 @@ const isWorkPage =
     bindHoverShimmer(document.querySelector<HTMLElement>(".top-bar__name"));
   };
 
+  let cancelScrollToTop: (() => void) | null = null;
+
   // Exponential smoothing (not a timed curve): each frame moves a fraction of
   // the distance left, so it settles like a damped object. The dt term keeps it
   // frame-rate independent; DECAY is the feel knob.
   const scrollToTop = () => {
+    cancelScrollToTop?.();
     if (window.scrollY <= 0) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       window.scrollTo(0, 0);
@@ -187,8 +190,11 @@ const isWorkPage =
     let raf = 0;
     const stop = () => {
       cancelAnimationFrame(raf);
+      raf = 0;
       handoff.abort();
+      if (cancelScrollToTop === stop) cancelScrollToTop = null;
     };
+    cancelScrollToTop = stop;
     for (const evt of ["wheel", "touchstart", "keydown"]) {
       window.addEventListener(evt, stop, {
         signal: handoff.signal,
@@ -202,7 +208,7 @@ const isWorkPage =
       last = now;
       if (current < 0.5) {
         window.scrollTo(0, 0);
-        handoff.abort();
+        stop();
         return;
       }
       window.scrollTo(0, current);
@@ -242,6 +248,7 @@ const isWorkPage =
   };
 
   initOnce("wordmarkShimmer", () => {
+    document.addEventListener("astro:before-swap", () => cancelScrollToTop?.());
     document.addEventListener("astro:page-load", setupWordmarkShimmer);
     document.addEventListener("astro:page-load", setupSamePageScroll);
   });
